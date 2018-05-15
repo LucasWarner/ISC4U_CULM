@@ -33,21 +33,16 @@ if M < 3:
 d = (floor(2.6 * M - 5.39) + floor((Y - (100 * (floor(Y / 100)))) / 4) + floor((floor(Y / 100)) / 4) + D + (Y - (100 * (floor(Y / 100)))) - (2 * (floor(Y / 100)))) - (7 * floor((floor(2.6 * M - 5.39) + floor((Y - (100 * (floor(Y / 100)))) / 4) + floor((floor(Y / 100)) / 4) + D + (Y - (100 * (floor(Y / 100)))) - (2 * (floor(Y / 100)))) / 7))
 
 
-def setup():
-    global x_offset, y_offset
-    size(1200,1000)
+def display():
+    global x_offset, y_offset, d, events, repeating_events
     x_offset = width/30
     y_offset = width/30
-
-def draw():
-    global x_offset, y_offset, d, events, repeating_events
-    clear()
-    background(255)
     
     on_number = 1
     box_y_range = (monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1))
     event_in_box = [0 for i in range(monthDays[thisMonth])]
-    
+    fill(255)
+    rect(x_offset,0,width-x_offset,height-y_offset)
     for box_y in range(box_y_range):
         for box_x in range(7):
             if box_y == 0:
