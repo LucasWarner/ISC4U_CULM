@@ -10,7 +10,6 @@ Filler team options:
 Randomize button to run it again with the same settings? But with random.shuffle, it won't be the same?
 """
 y=0
-import MainPage
 import random
 def MatchMake(teamsNamed):
     random.shuffle(teamsNamed)

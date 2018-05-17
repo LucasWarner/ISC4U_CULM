@@ -15,6 +15,7 @@
 import MainPage
 import StartPage
 import Button
+import ScheduleBar
 def settings():
     if full_bol() == "True":
         fullScreen()
@@ -27,13 +28,15 @@ def setup():
     fill(0)
     Start_Page = StartPage.StartPage(dim(20, 'y'),dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
 def setup_2():
-    global first_page,second_page
+    global first_page,second_page,Main_Page
+    Main_Page = MainPage.MainPage()
     first_page = False
     Start_Button.Del()
     Exit_Button.Del()
     Start_Page.Del()
+    ScheduleBar.Setup()
+    
     second_page = True
-    Main_Page = MainPage.MainPage()
 def draw():
     if first_page == True:
         update1(mouseX,mouseY)
@@ -70,24 +73,31 @@ def update1(x, y):
     text("Welcome to Overload, the organizational\nprogram you wish you'd always had. \nWe're there for whatever you need to \norganize. Easy, quick, and ready to go, \nOverload is good for daily and monthly \nscheduling, tournaments and games, \nas well as other more personal events. \nWith an array of useful and hand-crafted \nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
 def update2(x,y):
-    pass
+    Main_Page.update()
+    ScheduleBar.update()
 def mousePressed():
     global first_page,second_page
-    if over_exit_button:
-        exit()
-    if over_start_button:
-        setup_2()
-    if over_full:
-        Settings = open("settings.txt","w")
-        if FullScreen == "True":
-            Settings.write("FullScreen: False")
-        else:
-            Settings.write("FullScreen: True")
-        Settings.close()
-        clear()
-        full_bol()
-        setup()
-        
+    if first_page:
+        if over_exit_button:
+            exit()
+        if over_start_button:
+            setup_2()
+        if over_full:
+            Settings = open("settings.txt","w")
+            if FullScreen == "True":
+                Settings.write("FullScreen: False")
+            else:
+                Settings.write("FullScreen: True")
+            Settings.close()
+            clear()
+            full_bol()
+            setup()
+            
+    if second_page:
+        ScheduleBar.mousepressed()
+def mouseReleased():
+    if second_page:
+        ScheduleBar.mousereleased()
         
         
         

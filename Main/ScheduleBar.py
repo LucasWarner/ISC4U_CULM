@@ -86,36 +86,18 @@ class text_display(object):
 
 
 
+def Setup():
+    global day_schedule_bar, drag_node, last_clicked
+    day_schedule_bar = schedule_bar(50, 200, 400, 10, 50, 15, 330, 20, 8)
+    day_schedule_bar.nodes.append(node(0, 20, 0))
+    day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
+    day_schedule_bar.nodes.append(node(1, 20, day_schedule_bar.time_total))
 
-day_schedule_bar = schedule_bar(50, 200, 400, 10, 50, 15, 330, 20, 8)
-day_schedule_bar.nodes.append(node(0, 20, 0))
-day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
-day_schedule_bar.nodes.append(node(1, 20, day_schedule_bar.time_total))
-
-drag_node = -1
-last_clicked = -1
-
-
-
-
-
-
-
-
-
-
-def setup():
-    size(500,500)
-    background(255)
-
-
-
-def draw():
-    #Setup screen
-    clear()
-    background(255)
-    
-    #Make bars
+    drag_node = -1
+    last_clicked = -1
+def update():
+    #rect(45, 190, 410, 50)
+    #make Bars
     noStroke()
     sort_index = [i for i in range(len(day_schedule_bar.nodes))]
     nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
@@ -158,7 +140,7 @@ def draw():
     
     
 
-def mousePressed():
+def mousepressed():
     global drag_node
     
     #Get rid of time if not clicking on that same node again
@@ -226,9 +208,10 @@ def mousePressed():
                     found_open = True
 
         
-def mouseReleased():
+def mousereleased():
     global drag_node, last_clicked
     if drag_node != -1:
+        
         if day_schedule_bar.dragged == False:
             raw_time = int(day_schedule_bar.nodes[drag_node].time)
             if raw_time + day_schedule_bar.start_time*60 - 13*60 >= 0:
