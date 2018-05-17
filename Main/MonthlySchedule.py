@@ -6,7 +6,7 @@ Information we need from the outside:
     the desired month
 
 """
-s = 150
+s = 50
 rows = 5
 collumns = 7
 
@@ -42,7 +42,7 @@ def display():
     box_y_range = (monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1))
     event_in_box = [0 for i in range(monthDays[thisMonth])]
     fill(255)
-    rect(x_offset,0,width-x_offset,height-y_offset)
+    rect(x_offset,0,7*s + x_offset,box_y_range*s + y_offset)
     for box_y in range(box_y_range):
         for box_x in range(7):
             if box_y == 0:
