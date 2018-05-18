@@ -16,6 +16,8 @@ import MainPage
 import StartPage
 import Button
 import ScheduleBar
+import Input
+
 def settings():
     if full_bol() == "True":
         fullScreen()
@@ -72,9 +74,12 @@ def update1(x, y):
     noStroke()
     text("Welcome to Overload, the organizational\nprogram you wish you'd always had. \nWe're there for whatever you need to \norganize. Easy, quick, and ready to go, \nOverload is good for daily and monthly \nscheduling, tournaments and games, \nas well as other more personal events. \nWith an array of useful and hand-crafted \nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
+
 def update2(x,y):
     Main_Page.update()
     ScheduleBar.update()
+    Input.update()
+    
 def mousePressed():
     global first_page,second_page
     if first_page:
@@ -95,10 +100,11 @@ def mousePressed():
             
     if second_page:
         ScheduleBar.mousepressed()
+        Input.mousepressed()
+        
 def mouseReleased():
     if second_page:
         ScheduleBar.mousereleased()
-        
         
         
         

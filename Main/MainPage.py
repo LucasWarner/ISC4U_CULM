@@ -10,6 +10,7 @@ class MainPage:
         #MatchOrgAndSep.MatchMake(teamsNamed)
         #PDFCreation()
         #MonthlySchedule.display()
+        
     def update(self):
         image(main_page,0,0,width,height)
     def Del(self):
