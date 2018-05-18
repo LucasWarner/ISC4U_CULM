@@ -49,8 +49,8 @@ class input(object):
         self.id = id
         self.x = x
         self.y = y
-        self.hei = 100
-        self.wid = 175
+        self.hei = hei
+        self.wid = wid
         self.text_size = text_size
         self.txt = ""
         self.txt_show = ""
@@ -76,7 +76,7 @@ class input(object):
         text(self.txt, self.x, self.y-self.text_size/2)
 
     #Estimate width of text
-    def estimate_string_width(string_check):
+    def estimate_string_width(string_check=""):
         width_score = 0
         letter_found = False
         for each_letter in string_check:
@@ -103,11 +103,11 @@ def update():
     for each_input in inputs:
         each_input.draw_input()
         
-        if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei) or input_count == activated_input:
+        if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
             over_input = True
             each_input.hover = True
             
-            if activated == True:
+            if each_input.activated == True:
                 cursor(TEXT)
             else:
                 cursor(HAND)
@@ -157,12 +157,13 @@ def keypressed():
             if activated_input.edit_position > 0:
                 activated_input.edit_position -= 1
         #Enter
-        """if keyCode == 10:
-            user_input = text_inputed[activated_input]
-            text_inputed[activated_input] = ""
-            input_given(user_input)
-            activated_input = -1"""
-        
+        #"""
+        #if keyCode == 10:
+            #user_input = text_inputed[activated_input]
+            #text_inputed[activated_input] = ""
+            #input_given(user_input)
+            #activated_input = -1
+        #"""
         #Delete   
         elif keyCode == 8:
             if len(activated_input.txt) > 0 and activated_input.edit_position >= 0:
@@ -198,7 +199,7 @@ def mousepressed():
                 each_input.activated = True
                 each_input.edit_position = 0
             else:
-                for cursor_position in range(len(each_input.text_show)):
+                for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)
                     if mouseX > each_input.x[input_count] + estimate_string_width(each_input.text_show[cursor_position:])*each_input.text_size/3.6:

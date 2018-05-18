@@ -36,8 +36,8 @@ def setup_2():
     Start_Button.Del()
     Exit_Button.Del()
     Start_Page.Del()
-    ScheduleBar.Setup()
-    
+    #ScheduleBar.Setup()
+    Input.inputs.append(Input.input(0,100,200,20,150,dim(20, 'y')))
     second_page = True
 def draw():
     if first_page == True:
@@ -77,7 +77,7 @@ def update1(x, y):
 
 def update2(x,y):
     Main_Page.update()
-    ScheduleBar.update()
+    #ScheduleBar.update()
     Input.update()
     
 def mousePressed():
@@ -99,18 +99,18 @@ def mousePressed():
             setup()
             
     if second_page:
-        ScheduleBar.mousepressed()
+        #ScheduleBar.mousepressed()
         Input.mousepressed()
         
 def mouseReleased():
-    if second_page:
-        ScheduleBar.mousereleased()
+    pass
+    #if second_page:
+        #ScheduleBar.mousereleased()
         
         
         
         
         
-# check for mouse overs
 def over_clickable(x, y, w, h):
     return x <= mouseX <= x + w and y <= mouseY <= y + h
 #All dimensions remain in constant ratios of window size
