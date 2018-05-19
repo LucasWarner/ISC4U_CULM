@@ -37,7 +37,7 @@ def setup_2():
     Exit_Button.Del()
     Start_Page.Del()
     #ScheduleBar.Setup()
-    Input.inputs.append(Input.input(0,100,200,20,150,dim(20, 'y')))
+    #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     second_page = True
 def draw():
     if first_page == True:
@@ -78,7 +78,7 @@ def update1(x, y):
 def update2(x,y):
     Main_Page.update()
     #ScheduleBar.update()
-    Input.update()
+    #Input.update()
     
 def mousePressed():
     global first_page,second_page
@@ -99,15 +99,19 @@ def mousePressed():
             setup()
             
     if second_page:
+        pass
         #ScheduleBar.mousepressed()
-        Input.mousepressed()
+        #Input.mousepressed()
         
 def mouseReleased():
     pass
     #if second_page:
         #ScheduleBar.mousereleased()
         
-        
+def keyPressed():
+    if second_page:
+        #Input.keypressed()
+        pass
         
         
         
