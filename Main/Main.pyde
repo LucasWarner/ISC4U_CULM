@@ -30,14 +30,18 @@ def setup():
     fill(0)
     Start_Page = StartPage.StartPage(dim(20, 'y'),dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
 def setup_2():
-    global first_page,second_page,Main_Page
+    global first_page,second_page,Main_Page,tri1,test_list,schedule,input
     Main_Page = MainPage.MainPage()
     first_page = False
     Start_Button.Del()
     Exit_Button.Del()
     Start_Page.Del()
-    #ScheduleBar.Setup()
-    #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+    
+    tri1=True
+    schedule=False
+    input=False
+    test_list=["Schedule Bar","input","elm2"]
+    ScheduleBar.Setup()
     second_page = True
 def draw():
     if first_page == True:
@@ -56,12 +60,12 @@ def update1(x, y):
     if over_start_button:
         Start_Button.display(210,215,45,0,2,2,0,0)
     else:
-        Start_Button.display(0,150,150,240)
+        Start_Button.display(1,150,150,240)
     #Exit_Button
     if over_exit_button:
         Exit_Button.display(210,215,45,0,2,2,0,0)
     else:
-        Exit_Button.display(0,150,150,240)
+        Exit_Button.display(1,150,150,240)
     #Opening Paragragh
     strokeWeight(2)
     stroke(240)
@@ -76,12 +80,50 @@ def update1(x, y):
 
 
 def update2(x,y):
+    global over_test_button,side_bar,clickable_list
     Main_Page.update()
-    #ScheduleBar.update()
-    #Input.update()
+    clickable_list=[]
+    side_bar=[]
+    over_test_button = over_clickable(0, dim(40, 'y'), dim(150), dim(30, 'y'))
+    side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Test",True,tri1))
+    Y=30
+    if tri1==False:
+        for opt in test_list:
+            side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,14))
+            clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
+            Y+=30
+    for elm in side_bar:
+        elm.display(0,0,0,255,0,0,0,0)
+    if schedule:
+        ScheduleBar.update()
+    if input:
+        #A lot more work
+        Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+        Input.update()
     
 def mousePressed():
-    global first_page,second_page
+    global first_page,second_page,tri1,schedule,input
+    if second_page:
+        if schedule:        
+            ScheduleBar.mousepressed()
+        if input:
+            Input.mousepressed()
+        
+        
+        
+        if tri1==False:
+            print(clickable_list)
+            for but in clickable_list:
+                if clickable_list[0]==True:
+                    schedule = not schedule
+                if clickable_list[1]==True:
+                    input = not input
+        if over_test_button:
+            if tri1:
+                tri1=False
+            else:
+                tri1=True
+        
     if first_page:
         if over_exit_button:
             exit()
@@ -98,21 +140,15 @@ def mousePressed():
             full_bol()
             setup()
             
-    if second_page:
-        pass
-        #ScheduleBar.mousepressed()
-        #Input.mousepressed()
+    
         
 def mouseReleased():
-    pass
-    #if second_page:
-        #ScheduleBar.mousereleased()
+    if second_page:
+        ScheduleBar.mousereleased()
         
 def keyPressed():
     if second_page:
-        #Input.keypressed()
-        pass
-        
+        Input.keypressed()
         
         
 def over_clickable(x, y, w, h):

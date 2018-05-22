@@ -65,7 +65,7 @@ class node(object):
         sign_type = sign(mouseX - self.pos_x, None)
         for n_other in day_schedule_bar.nodes:
             if self.pos_x != n_other.pos_x:
-                if sign(self.pos_x - n_other.pos_x, sign_type) == sign_type*-1 and sign(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x, sign_type) == sign_type:
+                if sign(self.pos_x - n_other.pos_x, sign_type) == sign_type and sign(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x, sign_type) == sign_type:
                     obstructed = True
         
         if obstructed == False:
@@ -88,7 +88,7 @@ class text_display(object):
 
 def Setup():
     global day_schedule_bar, drag_node, last_clicked
-    day_schedule_bar = schedule_bar(50, 200, 400, 10, 50, 15, 330, 20, 8)
+    day_schedule_bar = schedule_bar(300, 100, 400, 10, 50, 15, 330, 20, 8)
     day_schedule_bar.nodes.append(node(0, 20, 0))
     day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
     day_schedule_bar.nodes.append(node(1, 20, day_schedule_bar.time_total))
@@ -114,7 +114,6 @@ def update():
     
     #Move nodes
     if drag_node != -1:
-        #print("Happened")
         for drag in range(int(abs(mouseX - day_schedule_bar.nodes[drag_node].pos_x) // day_schedule_bar.drag_change)):
             day_schedule_bar.nodes[drag_node].move()
     
@@ -141,8 +140,8 @@ def update():
     
 
 def mousepressed():
-    global drag_node
-    
+    global drag_node, day_schedule_bar
+
     #Get rid of time if not clicking on that same node again
     if over_clickable(day_schedule_bar.nodes[last_clicked].pos_x - day_schedule_bar.nodes[last_clicked].s/2, day_schedule_bar.nodes[last_clicked].pos_y - day_schedule_bar.nodes[last_clicked].s/2, day_schedule_bar.nodes[last_clicked].s, day_schedule_bar.nodes[last_clicked].s) == False:
         day_schedule_bar.time_shown = None
