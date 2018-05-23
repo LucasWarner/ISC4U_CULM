@@ -13,7 +13,7 @@ class MainPage:
         
     def update(self):
         image(main_page,0,0,width,height)
-        
+        noStroke()
         fill(10,190)
         rect(0,0,self.dim(150),height)
         

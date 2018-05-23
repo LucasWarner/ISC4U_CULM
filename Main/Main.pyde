@@ -39,10 +39,11 @@ def setup_2():
     tri2=True
     tri1=True
     schedule=False
-    #input=False
+    input=False
     test_list=["Schedule Bar","input","elm2"]
     test2_list=["a","b","c"]
     ScheduleBar.Setup()
+    Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     second_page = True
 def draw():
     if first_page == True:
@@ -85,6 +86,7 @@ def update2(x,y):
     Main_Page.update()
     clickable_list=[]
     side_bar=[]
+    #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     over_test_button = over_clickable(0, dim(40, 'y'), dim(150), dim(30, 'y'))
     side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Test",True,tri1))
     Y=30
@@ -105,18 +107,18 @@ def update2(x,y):
         elm.display(0,0,0,255,0,0,0,0)
     if schedule:
         ScheduleBar.update()
-    #if input:
+    if input:
         #A lot more work
-        #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
-        #Input.update()
+        #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y'))
+        Input.update()
     
 def mousePressed():
     global first_page,second_page,tri1,tri2,schedule,input
     if second_page:
         if schedule:        
             ScheduleBar.mousepressed()
-        #if input:
-            #Input.mousepressed()
+        if input:
+            Input.mousepressed()
         if tri1==False:
             for but in clickable_list:
                 if clickable_list[0]==True:

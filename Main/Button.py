@@ -31,6 +31,7 @@ class Button(object):
             fill(inRed,inGreen,inBlue)
             rect(self.ix, self.iy, self.iw, self.ih, self.rad)
         if self.lst:
+            noStroke()
             if self.rotation:
                 fill(255)
                 triangle(self.x+10, self.y+5, self.x+10, self.y+self.h/2, self.x+20, self.y+2.5+self.h/4)

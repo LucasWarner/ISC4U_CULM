@@ -147,6 +147,7 @@ def keypressed():
         if find_active.activated:
             activated_input = find_active
     
+    
     if activated_input != None:
         #Left arrow
         if keyCode == 37:
@@ -157,8 +158,8 @@ def keypressed():
         elif keyCode == 39:
             if activated_input.edit_position > 0:
                 activated_input.edit_position -= 1
-        #Enter
         
+        #Enter
         #elif keyCode == 10:
             #user_input = text_inputed[activated_input]
             #text_inputed[activated_input] = ""
@@ -171,6 +172,7 @@ def keypressed():
                 if len(activated_input.txt) > 0 and activated_input.edit_position >= 0:
                     activated_input.txt = activated_input.txt[:len(activated_input.txt)-activated_input.edit_position] + activated_input.txt[len(activated_input.txt)-activated_input.edit_position+1:]
                     activated_input.edit_position-=1
+        
         #Backspace   
         elif keyCode == 8:
             if activated_input.edit_position == -1:
@@ -185,7 +187,8 @@ def keypressed():
                 activated_input.txt += str(key)
             else:
                 activated_input.txt = activated_input.txt[:len(activated_input.txt)-activated_input.edit_position] + str(key) + activated_input.txt[len(activated_input.txt)-activated_input.edit_position:]
-    
+        
+        print(activated_input.txt)
                 
 #Check for button click
 def mousepressed():
