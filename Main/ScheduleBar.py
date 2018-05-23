@@ -65,10 +65,15 @@ class node(object):
         sign_type = sign(mouseX - self.pos_x, None)
         for n_other in day_schedule_bar.nodes:
             if self.pos_x != n_other.pos_x:
-                if sign(self.pos_x - n_other.pos_x, sign_type) == sign_type and sign(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x, sign_type) == sign_type:
+                print(sign_type)
+                print(sign(self.pos_x - n_other.pos_x, sign_type))
+                print(int(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x))
+                print("\n")
+                if sign(self.pos_x - n_other.pos_x, sign_type) == -sign_type and sign(int(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x), sign_type) == sign_type:
                     obstructed = True
         
         if obstructed == False:
+            print("Happened")
             self.pos_x += day_schedule_bar.drag_change * sign_type
             self.time += day_schedule_bar.smallest_interval * sign_type
             day_schedule_bar.dragged = True
@@ -131,6 +136,7 @@ def update():
     
     #Show node time
     if day_schedule_bar.time_shown != None:
+        day_schedule_bar.type_shown = None 
         #Convert minute value to proper time
         proper_time = day_schedule_bar.convert_time()
         text(proper_time, day_schedule_bar.time_shown.pos_x, day_schedule_bar.time_shown.pos_y)
@@ -141,7 +147,7 @@ def update():
 
 def mousepressed():
     global drag_node, day_schedule_bar
-
+    
     #Get rid of time if not clicking on that same node again
     if over_clickable(day_schedule_bar.nodes[last_clicked].pos_x - day_schedule_bar.nodes[last_clicked].s/2, day_schedule_bar.nodes[last_clicked].pos_y - day_schedule_bar.nodes[last_clicked].s/2, day_schedule_bar.nodes[last_clicked].s, day_schedule_bar.nodes[last_clicked].s) == False:
         day_schedule_bar.time_shown = None
@@ -152,6 +158,7 @@ def mousepressed():
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 drag_node = n
                 day_schedule_bar.dragged = False
+                
     
     #Check if day schedule bar type clicked to change
     if day_schedule_bar.type_shown != None:
