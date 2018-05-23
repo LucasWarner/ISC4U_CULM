@@ -81,19 +81,21 @@ def update1(x, y):
 
 
 def update2(x,y):
-    global over_test_button,side_bar,clickable_list
+    global over_test_button,over_test2_button,side_bar,clickable_list
     Main_Page.update()
     clickable_list=[]
     side_bar=[]
     over_test_button = over_clickable(0, dim(40, 'y'), dim(150), dim(30, 'y'))
     side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Test",True,tri1))
-    side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Test2",True,tri2))
     Y=30
     if tri1==False:
         for opt in test_list:
             side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,14))
             clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
             Y+=30
+    over_test2_button = over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'))
+    side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,"Test2",True,tri2))
+    Y+=30
     if tri2==False:
         for opt in test2_list:
             side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,14))
@@ -109,28 +111,22 @@ def update2(x,y):
         #Input.update()
     
 def mousePressed():
-    global first_page,second_page,tri1,schedule,input
+    global first_page,second_page,tri1,tri2,schedule,input
     if second_page:
         if schedule:        
             ScheduleBar.mousepressed()
         #if input:
             #Input.mousepressed()
-        
-        
-        
         if tri1==False:
-            print(clickable_list)
             for but in clickable_list:
                 if clickable_list[0]==True:
                     schedule = not schedule
                 if clickable_list[1]==True:
                     input = not input
         if over_test_button:
-            if tri1:
-                tri1=False
-            else:
-                tri1=True
-        
+            tri1= not tri1
+        if over_test2_button:
+            tri2= not tri2
     if first_page:
         if over_exit_button:
             exit()
