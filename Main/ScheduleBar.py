@@ -205,7 +205,7 @@ def mousepressed():
                 open_space = True
                     
                 for n in day_schedule_bar.nodes:
-                    if n.pos_x == check_pos:
+                    if int(n.pos_x) == int(check_pos):
                         open_space = False
                 
                 if open_space == True:
