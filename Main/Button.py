@@ -1,5 +1,5 @@
 class Button(object):
-    def __init__ (self,Xpos,Ypos,wid,high,rad,tex="null",ist=False,rotri=False, texSiz=18):
+    def __init__ (self,Xpos,Ypos,wid,high,rad,tex="null",ist=False,rotri=False, textSize=18):
         self.x = Xpos
         self.y = Ypos
         self.w = wid
@@ -14,7 +14,7 @@ class Button(object):
         self.ih = self.h - self.h/4
         self.lst = ist
         self.rotation = rotri
-        self.tS=texSiz
+        self.txSz=textSize
         
     def display(self,inRed=210,inGreen=215,inBlue=45,textColour=0,inStrokeW=1,outStrokeW=2,inStroke=240,outStroke=240):#,outred=inRed,outGreen=inGreen,outBlue=inBlue):
         if inRed!=0 and inGreen!=0 and inBlue!=0:
@@ -40,7 +40,7 @@ class Button(object):
                 triangle(self.x+10, self.y+5, self.x+20, self.y+5, self.x+15, self.y+self.h/2)
         fill(textColour)
         noStroke()
-        textSize(self.tS)
+        textSize(self.txSz)
         text(self.text, self.tx, self.ty)
     def Del(self):
         del self

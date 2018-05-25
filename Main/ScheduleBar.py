@@ -129,7 +129,7 @@ def update():
     
     
     #Show type name
-    fill(0)
+    fill(255)
     textSize(day_schedule_bar.text_size)
     if day_schedule_bar.type_shown != None: 
         text(day_schedule_bar.type_shown.txt, day_schedule_bar.type_shown.pos_x, day_schedule_bar.type_shown.pos_y)

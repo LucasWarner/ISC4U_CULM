@@ -9,6 +9,7 @@ class StartPage(object):
             image(yes,x,y,s,s)
         else:
             image(no,x,y,s,s)
+        fill(0)
         text("FullScreen:",tx,ty)
     def Del(self):
         del self
