@@ -132,13 +132,14 @@ def mousePressed():
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
-        '''
+        
         if first_drop_menu==False:
             
             for but in clickable_list:
                 if clickable_list[0]==True:
-                    teams = not teams
-        '''
+                    #teams = not teams
+                    input = not input
+        
         if second_drop_menu==False:
             for but in clickable_list:
                 if clickable_list[0]==True:

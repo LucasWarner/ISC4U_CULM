@@ -59,6 +59,8 @@ class input(object):
         self.edit_position = 0
         self.activated = False
         self.txt_width = 0
+        self.show_start = 0 
+        self.show_end = 0
         self.hover = False
 
     def draw_input(self):
@@ -125,19 +127,25 @@ def update():
             
             if width_score < 26:
                 each_input.txt_show = each_input.txt
+            elif each_input.edit_position > each_input.show_start and each_input.edit_position < each_input.show_end:
+                each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
             else:
-                minus_string = 0
+                each_input.show_start = 0
+                each_input.show_end = len(each_input.txt)
                 while width_score >= 26:
-                    width_score = each_input.estimate_string_width(each_input.txt[minus_string:])
-                    minus_string += 1
-                
-                each_input.txt_show = each_input.txt[minus_string-1:]
+                    if each_input.show_end - each_input.edit_position < each_input.edit_position - each_input.show_start:
+                        each_input.show_start += 1
+                    else:        
+                        each_input.show_end -= 1
+        
+                    width_score = each_input.estimate_string_width(each_input.txt[each_input.show_start:each_input.show_end])
+                    each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
             
             text(each_input.txt_show, each_input.x, each_input.y + each_input.text_size)
             if (time.time()-time.time()%0.5) % 1 == 0:
                 stroke(0)
-                line_x = each_input.estimate_string_width(each_input.txt_show[each_input.edit_position:])*each_input.text_size/3.6
-                line(each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/7, each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/1.3)
+                line_x = each_input.estimate_string_width(each_input.txt_show[:each_input.edit_position-each_input.show_start])*each_input.text_size/3.6
+                line(each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/6, each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/1.2)
                 
 #Keypress to type in an input
 def keypressed():
@@ -148,17 +156,15 @@ def keypressed():
         if find_active.activated:
             activated_input = find_active
     
-    
     if activated_input != None:
         #Left arrow
         if keyCode == 37:
-            if len(activated_input.txt_show) > activated_input.edit_position:
-                activated_input.edit_position += 1
-        
-        #Right arrow
-        elif keyCode == 39:
             if activated_input.edit_position > 0:
                 activated_input.edit_position -= 1
+        #Right arrow
+        elif keyCode == 39:
+            if activated_input.edit_position < len(activated_input.txt):
+                activated_input.edit_position += 1
         
         #Enter
         #elif keyCode == 10:
@@ -169,28 +175,20 @@ def keypressed():
         
         #Delete
         elif keyCode == 127:
-            if activated_input.edit_position != 0:                
-                if len(activated_input.txt) > 0 and activated_input.edit_position >= 0:
-                    activated_input.txt = activated_input.txt[:len(activated_input.txt)-activated_input.edit_position] + activated_input.txt[len(activated_input.txt)-activated_input.edit_position+1:]
-                    activated_input.edit_position-=1
-        
+            if activated_input.edit_position != 0:
+                if len(activated_input.txt) > 0 and len(activated_input.txt) > activated_input.edit_position:
+                    activated_input.txt = activated_input.txt[:activated_input.edit_position] + activated_input.txt[activated_input.edit_position+1:]
         #Backspace   
         elif keyCode == 8:
-            if activated_input.edit_position == -1:
-                text_inputed[activated_input] = text_inputed[activated_input][:-1]
-            else:
-                if len(activated_input.txt) > 0 and activated_input.edit_position >= 0:
-                    activated_input.txt = activated_input.txt[:len(activated_input.txt)-activated_input.edit_position-1] + activated_input.txt[len(activated_input.txt)-activated_input.edit_position:]
-                    
+            if len(activated_input.txt) > 0 and activated_input.edit_position > 0:
+                activated_input.txt = activated_input.txt[:activated_input.edit_position-1] + activated_input.txt[activated_input.edit_position:]
+                activated_input.edit_position -= 1
+    
         #If not an invalid key (Ex. page up/home) then add the key to the input box
         elif str(key) != "65535":
-            if activated_input.edit_position == -1:
-                activated_input.txt += str(key)
-            else:
-                activated_input.txt = activated_input.txt[:len(activated_input.txt)-activated_input.edit_position] + str(key) + activated_input.txt[len(activated_input.txt)-activated_input.edit_position:]
+            activated_input.txt = activated_input.txt[:activated_input.edit_position] + str(key) + activated_input.txt[activated_input.edit_position:]
+            activated_input.edit_position += 1
         
-        print(activated_input.txt)
-                
 #Check for button click
 def mousepressed():
     global inputs
