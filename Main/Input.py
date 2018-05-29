@@ -120,9 +120,13 @@ def update():
             
             if width_score < 26:
                 each_input.txt_show = each_input.txt
+                addOne = 1
             elif each_input.edit_position > each_input.show_start and each_input.edit_position < each_input.show_end:
                 each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
+                each_input.show_end = 0
+                addOne = 0
             else:
+                addOne = 0
                 each_input.show_start = 0
                 each_input.show_end = len(each_input.txt)
                 while width_score >= 26:
@@ -137,7 +141,7 @@ def update():
             text(each_input.txt_show, each_input.x, each_input.y + each_input.text_size)
             if (time.time()-time.time()%0.5) % 1 == 0:
                 stroke(0)
-                line_x = each_input.estimate_string_width(each_input.txt_show[:each_input.edit_position-each_input.show_start])*each_input.text_size/3.6
+                line_x = each_input.estimate_string_width(each_input.txt_show[:each_input.edit_position-each_input.show_start+addOne])*each_input.text_size/3.6
                 line(each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/6, each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/1.2)
 
     if over_input == False:

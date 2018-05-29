@@ -32,7 +32,7 @@ def setup():
     Start_Page = StartPage.StartPage(dim(20, 'y'),dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     
 def setup_2():
-    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input
+    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input, team
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -46,10 +46,13 @@ def setup_2():
     time_menu=["Playing Times","Weekly Schedule","Month Schedule"]
     Match_menu=["Match Options","Preview"]
     second_page = True
+    
     schedule=False
     input=False
+    team =False
+    
     ScheduleBar.Setup()
-    Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+    Input.inputs.append(Input.input(0,dim(280),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     
 def draw():
     #Updates
@@ -93,7 +96,7 @@ def update1(x, y):
          "\nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
 def update2(x,y):
-    global over_test_button,over_test2_button,side_bar,clickable_list
+    global over_test_button,over_test2_button,side_bar,clickable_list,Y
     #Refresh page and variables
     Main_Page.update()
     clickable_list=[]
@@ -124,26 +127,25 @@ def update2(x,y):
         #A lot more work
         #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y'))
         Input.update()
-    
 def mousePressed():
     global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input
     if second_page:
+        i=0
         if schedule:        
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
         
         if first_drop_menu==False:
-            
-            for but in clickable_list:
-                if clickable_list[0]==True:
-                    #teams = not teams
-                    input = not input
-        
+            if clickable_list[i]==True:
+                #teams = not teams
+                input = not input
+                schedule, team = (False,)*2
+            i+=1
         if second_drop_menu==False:
-            for but in clickable_list:
-                if clickable_list[0]==True:
-                    schedule = not schedule
+            if clickable_list[i]==True:
+                schedule = not schedule
+                input, team, weekly = (False,)*3
                 '''
                 if clickable_list[1]==True:
                     weekly = not weekly
