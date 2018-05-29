@@ -40,7 +40,8 @@ letter_width = [['a', 1.9],
                 [' ', 1.3],
                 ['.', 1.1],
                 [';', 1.1],
-                ['/', 1.9]]
+                ['/', 1.9],
+                ['?', 1.5]]
 
 
 inputs = []
@@ -108,16 +109,8 @@ def update():
         each_input.draw_input()
         
         if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+            cursor(TEXT)
             over_input = True
-            each_input.hover = True
-            
-            if each_input.activated == True:
-                cursor(TEXT)
-            else:
-                cursor(HAND)
-        else:
-            each_input.hover = False 
-            cursor(ARROW)
     
         if each_input.txt != "":
             fill(0)
@@ -146,7 +139,10 @@ def update():
                 stroke(0)
                 line_x = each_input.estimate_string_width(each_input.txt_show[:each_input.edit_position-each_input.show_start])*each_input.text_size/3.6
                 line(each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/6, each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/1.2)
-                
+
+    if over_input == False:
+        cursor(ARROW)
+    
 #Keypress to type in an input
 def keypressed():
     global inputs
@@ -175,9 +171,9 @@ def keypressed():
         
         #Delete
         elif keyCode == 127:
-            if activated_input.edit_position != 0:
-                if len(activated_input.txt) > 0 and len(activated_input.txt) > activated_input.edit_position:
-                    activated_input.txt = activated_input.txt[:activated_input.edit_position] + activated_input.txt[activated_input.edit_position+1:]
+            if len(activated_input.txt) > 0 and len(activated_input.txt) > activated_input.edit_position:
+                activated_input.txt = activated_input.txt[:activated_input.edit_position] + activated_input.txt[activated_input.edit_position+1:]
+        
         #Backspace   
         elif keyCode == 8:
             if len(activated_input.txt) > 0 and activated_input.edit_position > 0:
@@ -192,24 +188,21 @@ def keypressed():
 #Check for button click
 def mousepressed():
     global inputs
-    input_clicked = False
     
-    activated_id = None
-    
+    activated_input = None
     for each_input in inputs:
-        if each_input.activated:
-            activated_id = each_input.id
+        if each_input.activated == True:
+            activated_input = each_input.id
     
+    input_clicked = None
     for each_input in inputs:
         if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
-            input_clicked = True
-            if each_input.id != activated_id:
-                for other_inputs in inputs:
-                    other_inputs.activated = False
-                
-                activated_id = each_input.id
+            input_clicked = each_input.id
+            
+            if activated_input != input_clicked:
                 each_input.activated = True
                 each_input.edit_position = 0
+    
             else:
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
@@ -217,12 +210,15 @@ def mousepressed():
                     if mouseX > each_input.x + each_input.estimate_string_width(each_input.txt_show[cursor_position:])*each_input.text_size/3.6:
                         each_input.edit_position = cursor_position
                         break
-                    
+
+    for each_input in inputs:
+        if each_input.id != input_clicked:
+            each_input.activated = False    
     
-    if input_clicked == False:
+    if input_clicked == None:
         for other_inputs in inputs:
             other_inputs.activated = False
-            other_inputs.edit_position = -1
+            other_inputs.edit_position = 0
 
 #Check for mouseovers
 def over_clickable(x, y, width, height): 
