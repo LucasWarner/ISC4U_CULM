@@ -25,14 +25,15 @@ def settings():
     else:
         size(800,600)
 def setup():
-    global Start_Page, first_page, second_page
+    global Start_Page, first_page, second_page, a
+    a=3
     #Set up opening page
     second_page = False
     first_page = True
     Start_Page = StartPage.StartPage(dim(20, 'y'),dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     
 def setup_2():
-    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input, team
+    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input, team, a
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -52,8 +53,8 @@ def setup_2():
     team =False
     
     ScheduleBar.Setup()
-    Input.inputs.append(Input.input(0,dim(280),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     
+    inputs()
 def draw():
     #Updates
     if first_page == True:
@@ -107,7 +108,7 @@ def update2(x,y):
     
     if first_drop_menu==False:
         for opt in team_menu:
-            side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,14))
+            side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,dim(14,'y')))
             clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
             Y+=30
     
@@ -116,7 +117,7 @@ def update2(x,y):
     Y+=30
     if second_drop_menu==False:
         for opt in time_menu:
-            side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,14))
+            side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,dim(14,'y')))
             clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
             Y+=30
     for elm in side_bar:
@@ -127,14 +128,31 @@ def update2(x,y):
         #A lot more work
         #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y'))
         Input.update()
+        Team_Update()
+def inputs():
+    Input.inputs=[]
+    for j in range(a):
+        Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+def Team_Update():
+    global a, over_add_button
+    fill(255)
+    text("Add/Remove Teams",dim(380),dim(50,'y') )
+    for j in range(a):
+        text(str(j+1) + ". Name:",dim(240),dim(100 + (30*j),'y'))
+    over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'))
+    add_button = Button.Button(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'),dim(400),"Add Team")
+    add_button.display(0,0,0,255,0,0,0,0)
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input
+    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,a
     if second_page:
         i=0
         if schedule:        
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
+            if over_add_button:
+                a+=1
+                inputs()
         
         if first_drop_menu==False:
             if clickable_list[i]==True:

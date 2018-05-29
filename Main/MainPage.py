@@ -15,7 +15,7 @@ class MainPage:
         image(main_page,0,0,width,height)
         noStroke()
         fill(10,190)
-        rect(0,0,self.dim(150),height)
+        rect(0,0,self.dim(180),height)
         
         rect(self.dim(200),self.dim(20,'y'),self.dim(550),height-self.dim(40,'y'),self.dim(10,'y'))
     def Del(self):
