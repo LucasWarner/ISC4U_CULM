@@ -106,7 +106,8 @@ def update():
     
     over_input = False
     for each_input in inputs:
-        each_input.draw_input()
+        if each_input.y>70 and each_input.y<750:
+            each_input.draw_input()
         
         if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
             cursor(TEXT)

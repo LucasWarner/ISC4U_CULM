@@ -1,3 +1,4 @@
+'''
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 import datetime
@@ -130,3 +131,4 @@ def createPDF():
         c.save()
     except IOError:
         print("\nPlease close the PDF file before generating anew")
+'''

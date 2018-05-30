@@ -19,7 +19,7 @@ import ScheduleBar
 import Input
 import PDFCreation
 
-PDFCreation.createPDF()
+#PDFCreation.createPDF()
 
 def settings():
     #set fullscreen or (800,600)
@@ -133,20 +133,30 @@ def update2(x,y):
         Input.update()
         Team_Update()
 def inputs():
-    global locked
     Input.inputs=[]
     for j in range(a):
-        Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+        Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     
 def Team_Update():
-    global a, over_add_button,ScrollY,locked
+    global a,over_add_button,over_remove_button,ScrollY,locked
+    inputs()
     fill(255)
     text("Add/Remove Teams",dim(380),dim(50,'y') )
     for j in range(a):
-        text(str(j+1) + ". Name:",dim(240),dim(100 + (30*j),'y'))
-    over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'))
-    add_button = Button.Button(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'),dim(400),"Add Team")
-    add_button.display(0,0,0,255,0,0,0,0)
+        if dim(80 + (30*j)-(hs1.sPos-hs1.yPos),'y')>70 and dim(80 + (30*j)-(hs1.sPos-hs1.yPos),'y')<750:
+            text(str(j+1) + ". Name:",dim(240),dim(100 + (30*j)-(hs1.sPos-hs1.yPos),'y'))
+    if a<30:
+        over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1))-(hs1.sPos-hs1.yPos), 'y'), dim(140), dim(30, 'y'))
+        add_button = Button.Button(dim(240), dim(100 + (30*(j+1))-(hs1.sPos-hs1.yPos), 'y'), dim(140), dim(30, 'y'),dim(400),"Add Team")
+        add_button.display(0,0,0,255,0,0,0,0)
+    else:
+        over_add_button = False
+    if a>1:
+        over_remove_button = over_clickable(dim(410), dim(100 + (30*(j+1))-(hs1.sPos-hs1.yPos), 'y'), dim(150), dim(30, 'y'))
+        remove_button = Button.Button(dim(380), dim(100 + (30*(j+1))-(hs1.sPos-hs1.yPos), 'y'), dim(180), dim(30, 'y'),dim(400),"remove Team")
+        remove_button.display(0,0,0,255,0,0,0,0)
+    else:
+        over_remove_button = False
     scrollY = getPos()
     display()
     if overEvent(): 
@@ -176,6 +186,8 @@ def mousePressed():
             if over_add_button:
                 a+=1
                 inputs()
+            if over_remove_button:
+                a-=1
         
         if first_drop_menu==False:
             if clickable_list[i]==True:
@@ -248,7 +260,7 @@ class Scrollbar(object): # scroll bar class
         self.ratio = sh / self.wifthToHeight
         self.xPos = xp-self.sWidth/2
         self.yPos = yp
-        self.sPos = 0
+        self.sPos = yp
         self.newsPos = self.sPos
         self.sPosMin = self.yPos-1
         self.sPosMax = height-39-self.sHeight/6
