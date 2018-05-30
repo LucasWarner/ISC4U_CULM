@@ -1,0 +1,3 @@
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
+stringWidth(text,fontName,fontSize

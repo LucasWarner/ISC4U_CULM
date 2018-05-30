@@ -25,15 +25,15 @@ def settings():
     else:
         size(800,600)
 def setup():
-    global Start_Page, first_page, second_page, a
+    global Start_Page, first_page, second_page, locked,a
     a=3
     #Set up opening page
     second_page = False
     first_page = True
     Start_Page = StartPage.StartPage(dim(20, 'y'),dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
-    
+    locked = False
 def setup_2():
-    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input, team, a
+    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, team_menu, time_menu, schedule, input, team, hs1
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -53,7 +53,7 @@ def setup_2():
     team =False
     
     ScheduleBar.Setup()
-    
+    hs1 = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     inputs()
 def draw():
     #Updates
@@ -130,11 +130,13 @@ def update2(x,y):
         Input.update()
         Team_Update()
 def inputs():
+    global locked
     Input.inputs=[]
     for j in range(a):
         Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+    
 def Team_Update():
-    global a, over_add_button
+    global a, over_add_button,ScrollY,locked
     fill(255)
     text("Add/Remove Teams",dim(380),dim(50,'y') )
     for j in range(a):
@@ -142,6 +144,24 @@ def Team_Update():
     over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'))
     add_button = Button.Button(dim(240), dim(100 + (30*(j+1)), 'y'), dim(100), dim(20, 'y'),dim(400),"Add Team")
     add_button.display(0,0,0,255,0,0,0,0)
+    scrollY = getPos()
+    display()
+    if overEvent(): 
+      over = True
+    else:
+      over = False
+    # lock the scroll bar square to mouse
+    if mousePressed and over: 
+      locked = True
+    # cancel lock on mouse button released
+    if mousePressed == False:
+      locked = False;
+    # move scroll bar square with mouse
+    if locked:
+      hs1.newsPos = constrain(mouseY-hs1.sWidth/2, hs1.sPosMin, hs1.sPosMax) 
+    # move scroll bar square with mouse smoothly
+    if abs(hs1.newsPos - hs1.sPos) > 1: 
+      hs1.sPos = hs1.sPos + (hs1.newsPos-hs1.sPos)/hs1.loose
 def mousePressed():
     global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,a
     if second_page:
@@ -216,3 +236,40 @@ def full_bol():
             FullScreen = str(Line[12:])
         Settings.close()
         return FullScreen
+class Scrollbar(object): # scroll bar class
+    def __init__ (self,xp, yp, sw, sh, l):
+        global sWidth, sHeight, xPos, yPos, sPos, newsPos, sPosMin, sPosMax, loose, ratio
+        self.sWidth = sw
+        self.sHeight = sh
+        self.wifthToHeight = sh - sw
+        self.ratio = sh / self.wifthToHeight
+        self.xPos = xp-self.sWidth/2
+        self.yPos = yp
+        self.sPos = 0
+        self.newsPos = self.sPos
+        self.sPosMin = self.yPos-1
+        self.sPosMax = height-39-self.sHeight/6
+        self.loose = l
+def overEvent(): #check for mouse overs for scrollbar square
+    if mouseX > hs1.xPos and mouseX < hs1.xPos+hs1.sWidth and mouseY > hs1.yPos and mouseY < hs1.yPos+hs1.sHeight:
+      return True
+    else:
+      return False
+def constrain(val, minv, maxv): # set scroll bar square max and min yPosition
+    return min(max(val, minv), maxv)
+def getPos():
+    #Convert sPos to be values between
+    #0 and the total width of the scrollbar
+    return hs1.sPos * hs1.ratio
+def display():
+    # scrollbar
+    noStroke()
+    fill(204)
+    rect(hs1.xPos, hs1.yPos, hs1.sWidth, hs1.sHeight)
+    # scrollbar square colour
+    if overEvent() or locked:
+        fill(100, 100, 100)
+    else:
+        fill(100, 120, 140)
+    # scrollbar square
+    rect(hs1.xPos, hs1.sPos, hs1.sWidth, hs1.sHeight/6)
