@@ -17,6 +17,9 @@ import StartPage
 import Button
 import ScheduleBar
 import Input
+import PDFCreation
+
+PDFCreation.createPDF()
 
 def settings():
     #set fullscreen or (800,600)
