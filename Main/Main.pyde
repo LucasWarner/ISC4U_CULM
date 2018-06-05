@@ -29,6 +29,7 @@ def settings():
         size(800,600)
 def setup():
     global Start_Page, first_page, second_page, locked,a
+
     a=3
     #Set up opening page
     second_page = False

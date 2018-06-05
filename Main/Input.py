@@ -1,51 +1,8 @@
 import time
 
-
-letter_width = [['a', 1.9],
-                ['b', 2.2],
-                ['c', 1.8],
-                ['d', 2.2],
-                ['e', 1.9],
-                ['f', 1.35],
-                ['g', 2.2],
-                ['h', 2.2],
-                ['i', 1],
-                ['j', 1.1],
-                ['k', 2.1],
-                ['l', 1],
-                ['m', 3.3],
-                ['n', 2.2],
-                ['o', 2.2],
-                ['p', 2.2],
-                ['q', 2.2],
-                ['r', 1.45],
-                ['s', 1.8],
-                ['t', 1.35],
-                ['u', 2.15],
-                ['v', 1.8],
-                ['w', 2.7],
-                ['x', 2.2],
-                ['y', 1.8],
-                ['z', 2],
-                ['1', 2.2],
-                ['2', 2.2],
-                ['3', 2.2],
-                ['4', 2.2],
-                ['5', 2.2],
-                ['6', 2.2],
-                ['7', 2.2],
-                ['8', 2.2],
-                ['9', 2.2],
-                ['0', 2.2],
-                [' ', 1.3],
-                ['.', 1.1],
-                [';', 1.1],
-                ['/', 1.9],
-                ['?', 1.5]]
-
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
 inputs = []
-
 
 class input(object):
     def __init__(self, id, x, y, hei, wid, text_size):
@@ -80,25 +37,6 @@ class input(object):
         noStroke()
         #text(self.txt, self.x, self.y-self.text_size/2)
 
-    #Estimate width of text
-    def estimate_string_width(self,string_check):
-        width_score = 0
-        letter_found = False
-        for each_letter in string_check:
-            for check_letter_list in range(len(letter_width)):
-                if each_letter == letter_width[check_letter_list][0]:
-                    width_score += letter_width[check_letter_list][1]
-                    letter_found = True
-                
-                elif each_letter.lower() == letter_width[check_letter_list][0]:
-                    width_score += letter_width[check_letter_list][1] * 1.2
-                    letter_found = True
-        
-            if letter_found == False:
-                width_score += 1.5
-    
-        return width_score
-
 
 #Update button appearencs/check for button mouseovers
 def update():
@@ -117,9 +55,9 @@ def update():
             fill(0)
             textAlign(LEFT)
             
-            width_score = each_input.estimate_string_width(each_input.txt)
-            
-            if width_score < 26:
+            width_score = stringWidth(each_input.txt,'Helvetica', 20)
+            print(width_score)
+            if width_score < 140:
                 each_input.txt_show = each_input.txt
                 addOne = 1
             elif each_input.edit_position > each_input.show_start and each_input.edit_position < each_input.show_end:
@@ -130,21 +68,26 @@ def update():
                 addOne = 0
                 each_input.show_start = 0
                 each_input.show_end = len(each_input.txt)
-                while width_score >= 26:
+                while width_score >= 140:
                     if each_input.show_end - each_input.edit_position < each_input.edit_position - each_input.show_start:
                         each_input.show_start += 1
                     else:        
                         each_input.show_end -= 1
-        
-                    width_score = each_input.estimate_string_width(each_input.txt[each_input.show_start:each_input.show_end])
+
+                    width_score = stringWidth(each_input.txt[each_input.show_start:each_input.show_end],'Helvetica', 20)
+                    
                     each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
             
+            textFont(createFont("Helvetica", 20))
             text(each_input.txt_show, each_input.x, each_input.y + each_input.text_size)
-            if (time.time()-time.time()%0.5) % 1 == 0:
-                stroke(0)
-                line_x = each_input.estimate_string_width(each_input.txt_show[:each_input.edit_position-each_input.show_start+addOne])*each_input.text_size/3.6
-                line(each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/6, each_input.x + line_x + each_input.text_size/5, each_input.y + each_input.hei/1.2)
-
+            
+            if each_input.activated == True:
+                if (time.time()-time.time()%0.5) % 1 == 0:
+                    stroke(0)
+                    line_x = stringWidth(each_input.txt_show[:each_input.edit_position-each_input.show_start],'Helvetica', 20)
+                    strokeWeight(1)
+                    line(each_input.x + line_x, each_input.y + each_input.hei/6, each_input.x + line_x, each_input.y + each_input.hei/1.2)
+    
     if over_input == False:
         cursor(ARROW)
     
@@ -206,15 +149,32 @@ def mousepressed():
             
             if activated_input != input_clicked:
                 each_input.activated = True
-                each_input.edit_position = 0
+                for cursor_position in range(len(each_input.txt_show)):
+                    fill(0)
+                    stroke(0)
+                    print(mouseX)
+                    print(each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 20))
+                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 20):
+                        if each_input.txt != each_input.txt_show:
+                            each_input.edit_position = each_input.txt.index(each_input.txt_show) + cursor_position
+                            break
+                        else:
+                            each_input.edit_position = cursor_position + 2
+                            break
     
             else:
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)
-                    if mouseX > each_input.x + each_input.estimate_string_width(each_input.txt_show[cursor_position:])*each_input.text_size/3.6:
-                        each_input.edit_position = cursor_position
-                        break
+                    print(mouseX)
+                    print(each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 20))
+                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 20):
+                        if each_input.txt != each_input.txt_show:
+                            each_input.edit_position = each_input.txt.index(each_input.txt_show) + cursor_position
+                            break
+                        else:
+                            each_input.edit_position = cursor_position + 2
+                            break
 
     for each_input in inputs:
         if each_input.id != input_clicked:
@@ -223,7 +183,7 @@ def mousepressed():
     if input_clicked == None:
         for other_inputs in inputs:
             other_inputs.activated = False
-            other_inputs.edit_position = 0
+        
 
 #Check for mouseovers
 def over_clickable(x, y, width, height): 
