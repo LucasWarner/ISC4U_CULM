@@ -65,15 +65,10 @@ class node(object):
         sign_type = sign(mouseX - self.pos_x, None)
         for n_other in day_schedule_bar.nodes:
             if self.pos_x != n_other.pos_x:
-                print(sign_type)
-                print(sign(self.pos_x - n_other.pos_x, sign_type))
-                print(int(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x))
-                print("\n")
                 if sign(self.pos_x - n_other.pos_x, sign_type) == -sign_type and sign(int(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x), sign_type) == sign_type:
                     obstructed = True
         
         if obstructed == False:
-            print("Happened")
             self.pos_x += day_schedule_bar.drag_change * sign_type
             self.time += day_schedule_bar.smallest_interval * sign_type
             day_schedule_bar.dragged = True
@@ -93,7 +88,7 @@ class text_display(object):
 
 def Setup():
     global day_schedule_bar, drag_node, last_clicked
-    day_schedule_bar = schedule_bar(300, 100, 400, 10, 50, 15, 330, 20, 8)
+    day_schedule_bar = schedule_bar(280, 100, 400, 10, 50, 15, 330, 20, 8)
     day_schedule_bar.nodes.append(node(0, 20, 0))
     day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
     day_schedule_bar.nodes.append(node(1, 20, day_schedule_bar.time_total))
@@ -192,26 +187,26 @@ def mousepressed():
                 day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - 27, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
     
     #Add node
-    if mouseX < 100 and mouseY < 100:
-        #If not already filled with nodes
-        if len(day_schedule_bar.nodes)-1 < int(day_schedule_bar.wid/day_schedule_bar.drag_change):
-            #Look for an open space
-            found_open = False
-            check_pos = day_schedule_bar.pos_x + day_schedule_bar.wid
-            time_placed = day_schedule_bar.time_total
-            while found_open == False:
-                check_pos -= day_schedule_bar.drag_change
-                time_placed -= day_schedule_bar.smallest_interval
-                open_space = True
+def addNode():
+#If not already filled with nodes
+    if len(day_schedule_bar.nodes)-1 < int(day_schedule_bar.wid/day_schedule_bar.drag_change):
+        #Look for an open space
+        found_open = False
+        check_pos = day_schedule_bar.pos_x + day_schedule_bar.wid
+        time_placed = day_schedule_bar.time_total
+        while found_open == False:
+            check_pos -= day_schedule_bar.drag_change
+            time_placed -= day_schedule_bar.smallest_interval
+            open_space = True
                     
-                for n in day_schedule_bar.nodes:
-                    if int(n.pos_x) == int(check_pos):
-                        open_space = False
+            for n in day_schedule_bar.nodes:
+                if int(n.pos_x) == int(check_pos):
+                    open_space = False
                 
-                if open_space == True:
-                    day_schedule_bar.nodes.append(node((check_pos - day_schedule_bar.pos_x)/day_schedule_bar.wid, 20, time_placed))
-                    day_schedule_bar.types.append("Game")
-                    found_open = True
+            if open_space == True:
+                day_schedule_bar.nodes.append(node((check_pos - day_schedule_bar.pos_x)/day_schedule_bar.wid, 20, time_placed))
+                day_schedule_bar.types.append("Game")
+                found_open = True
 
         
 def mousereleased():

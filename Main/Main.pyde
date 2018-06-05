@@ -61,11 +61,11 @@ def setup_2():
 def draw():
     #Updates
     if first_page == True:
-        update1(mouseX,mouseY)
+        update1()
     else:
-        update2(mouseX,mouseY)
+        update2()
         
-def update1(x, y):
+def update1():
     global over_start_button, over_exit_button, over_full, Start_Button, Exit_Button
     #Clickables and button inits
     over_start_button = over_clickable(dim(500), dim(460, 'y'), dim(200), dim(60, 'y'))
@@ -99,8 +99,8 @@ def update1(x, y):
          "\nas well as other more personal events. \nWith an array of useful and hand-crafted"+
          "\nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
-def update2(x,y):
-    global over_test_button,over_test2_button,side_bar,clickable_list,Y
+def update2():
+    global over_test_button,over_test2_button,side_bar,clickable_list,Y,add_node
     #Refresh page and variables
     Main_Page.update()
     clickable_list=[]
@@ -127,19 +127,23 @@ def update2(x,y):
         elm.display(0,0,0,255,0,0,0,0)
     if schedule:
         ScheduleBar.update()
+        Schedule_Update()
     if input:
         #A lot more work
         #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y'))
         Input.update()
         Team_Update()
-def inputs():
-    Input.inputs=[]
-    for j in range(a):
-        Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
-    
+def inputs(s=''):
+    if s=='a':
+        Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+    elif s=='p':
+        Input.inputs.pop()
+    else:
+        Input.inputs=[]
+        for j in range(a):
+            Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
 def Team_Update():
     global a,over_add_button,over_remove_button,ScrollY,locked
-    inputs()
     fill(255)
     text("Add/Remove Teams",dim(380),dim(50,'y') )
     for j in range(a):
@@ -157,6 +161,7 @@ def Team_Update():
         remove_button.display(0,0,0,255,0,0,0,0)
     else:
         over_remove_button = False
+        
     scrollY = getPos()
     display()
     if overEvent(): 
@@ -175,19 +180,28 @@ def Team_Update():
     # move scroll bar square with mouse smoothly
     if abs(hs1.newsPos - hs1.sPos) > 1: 
       hs1.sPos = hs1.sPos + (hs1.newsPos-hs1.sPos)/hs1.loose
+      
+def Schedule_Update():
+    global add_node
+    add_node=over_clickable(dim(400), dim(160, 'y'), dim(180), dim(30, 'y'))
+    add_node_button = Button.Button(dim(370), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
+    add_node_button.display(0,0,0,255,0,0,0,0)
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,a
+    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,a
     if second_page:
         i=0
-        if schedule:        
+        if schedule:
+            if add_node:
+                ScheduleBar.addNode()
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
             if over_add_button:
                 a+=1
-                inputs()
+                inputs('a')
             if over_remove_button:
                 a-=1
+                inputs('p')
         
         if first_drop_menu==False:
             if clickable_list[i]==True:
@@ -224,16 +238,16 @@ def mousePressed():
             clear()
             full_bol()
             setup()
-            
-    
-        
 def mouseReleased():
     if second_page:
         ScheduleBar.mousereleased()
-        
 def keyPressed():
     if second_page:
         Input.keypressed()
+        
+        
+        
+        
         
         
 def over_clickable(x, y, w, h):
@@ -251,6 +265,12 @@ def full_bol():
             FullScreen = str(Line[12:])
         Settings.close()
         return FullScreen
+    
+    
+    
+    
+    
+    
 class Scrollbar(object): # scroll bar class
     def __init__ (self,xp, yp, sw, sh, l):
         global sWidth, sHeight, xPos, yPos, sPos, newsPos, sPosMin, sPosMax, loose, ratio
