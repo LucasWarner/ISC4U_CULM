@@ -1,4 +1,3 @@
-'''
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 import datetime
@@ -94,6 +93,11 @@ def monthly_schedule(c):
     
     drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek)
 
+def sign(x):
+    if x > 0:
+        return 1
+    if x < 0:
+        return -1
 
 def drawMatches(c, teams, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
@@ -101,20 +105,22 @@ def drawMatches(c, teams, font_size, wid, y_offset):
     c.setFont('Helvetica', font_size)
     
     if len(teams) <= 10:
-        collumn_range = 1
-    else:
-        collumn_range = 2
-    
-    for collumn in range(collumn_range):
         for t in range(len(teams)):
-            if t // 10 == collumn:
-                c.drawCentredString (int(wid/(collumn+1)), -(t%10)*20 + y_offset, teams[t])
-
+            c.drawCentredString (wid, -t*20 + y_offset, teams[t])
+    else:
+        for t in range(len(teams)):
+            if t <= int((len(teams)-1)/2):
+                c.drawCentredString(wid - int(wid/3), -t*20 + y_offset, teams[t])
+            else:
+                if len(teams) % 2 == 0:
+                    c.drawCentredString(wid + int(wid/3), -(t-int(len(teams)/2))*20 + y_offset, teams[t])
+                else:
+                    c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(teams)/2))*20 + y_offset, teams[t])
 def matches(c, width):
     font_size = 15
     wid = width
-    teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8']
-    y_offset = 200
+    teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
+    y_offset = 400
     
     drawMatches(c, teams, font_size, wid, y_offset)
     
@@ -131,4 +137,3 @@ def createPDF():
         c.save()
     except IOError:
         print("\nPlease close the PDF file before generating anew")
-'''

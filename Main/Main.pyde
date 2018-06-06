@@ -19,7 +19,7 @@ import ScheduleBar
 import Input
 import PDFCreation
 
-#PDFCreation.createPDF()
+PDFCreation.createPDF()
 
 def settings():
     #set fullscreen or (800,600)
