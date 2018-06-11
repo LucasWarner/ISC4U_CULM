@@ -1,3 +1,5 @@
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
 """
 Information we need from the outside:
     x/y position of the schedule bar
@@ -22,13 +24,14 @@ class schedule_bar(object):
         self.type_shown = None
         self.time_shown = None
         self.type_shown_id = -1
-        self.types = ["Game", "Game"]
+        self.types = ["Activity", "Activity"]
         self.text_size = text_size
         self.dragged = False
         self.start_time = start_time
+        self.titles = ["Activity #1", "Activity #2"]
         
     def create_bars(self, id, sort_index):
-        if day_schedule_bar.types[id] == "Game":
+        if day_schedule_bar.types[id] == "Activity":
             fill(153, 217, 234)
         if day_schedule_bar.types[id] == "Break":
             fill(255, 140, 0)
@@ -83,7 +86,16 @@ class text_display(object):
 
 
 
-
+def rangeOption(type):
+    global day_schedule_bar
+    if type == 1:
+        day_schedule_bar.smallest_interval = 10
+    if type == 2:
+        day_schedule_bar.smallest_interval = 15
+    if type == 3:
+        day_schedule_bar.smallest_interval = 30
+    if type == 4:
+        day_schedule_bar.smallest_interval = 60
 
 
 def Setup():
@@ -95,6 +107,9 @@ def Setup():
 
     drag_node = -1
     last_clicked = -1
+
+
+
 def update():
     #rect(45, 190, 410, 50)
     #make Bars
@@ -130,14 +145,33 @@ def update():
         text(day_schedule_bar.type_shown.txt, day_schedule_bar.type_shown.pos_x, day_schedule_bar.type_shown.pos_y)
     
     #Show node time
+    over = False
+    if day_schedule_bar.dragged == False:
+        for n in range (len(day_schedule_bar.nodes)):
+            if over_clickable(day_schedule_bar.nodes[n].pos_x-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
+                over = True
+                raw_time = int(day_schedule_bar.nodes[n].time)
+                if raw_time + day_schedule_bar.start_time*60 - 13*60 >= 0:
+                    raw_time += 60
+                
+                if len(str(raw_time % 60)) == 2:
+                    proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, raw_time % 60)
+                else:
+                    if raw_time % 60 < 10:
+                        proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, "0" + str(raw_time % 60))
+                    else:
+                        proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, str(raw_time % 60) + "0")
+                
+                day_schedule_bar.time_shown = text_display(str(day_schedule_bar.nodes[n].time), day_schedule_bar.nodes[n].pos_x - (len(proper_time)-1)*6.3, day_schedule_bar.pos_y + day_schedule_bar.hei*3.5)
+    
+    if over == False:
+        day_schedule_bar.time_shown = None
+    
     if day_schedule_bar.time_shown != None:
         day_schedule_bar.type_shown = None 
         #Convert minute value to proper time
         proper_time = day_schedule_bar.convert_time()
         text(proper_time, day_schedule_bar.time_shown.pos_x, day_schedule_bar.time_shown.pos_y)
-    
-
-    
     
 
 def mousepressed():
@@ -155,38 +189,71 @@ def mousepressed():
                 day_schedule_bar.dragged = False
                 
     
-    #Check if day schedule bar type clicked to change
-    if day_schedule_bar.type_shown != None:
-        if over_clickable(day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y, len(day_schedule_bar.type_shown.txt)*day_schedule_bar.text_size/1.6, day_schedule_bar.text_size*1.6):
-            if day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Game":
-                day_schedule_bar.types[day_schedule_bar.type_shown_id] = "Break"
-                day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
-
-            elif day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Break":
-                day_schedule_bar.types[day_schedule_bar.type_shown_id] = "Game"
-                day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
-
-        else:
-            day_schedule_bar.type_shown = None
-    
     #Check if day schedule bar clicked
     #If it wasn't a node that was pressed on (Because then we wouldn't want the bar to be activated)
-    if drag_node == -1:
-        if over_clickable(day_schedule_bar.pos_x, day_schedule_bar.pos_y, day_schedule_bar.wid, day_schedule_bar.hei):
-            #Find closest left node
-            sort_index = [i for i in range(len(day_schedule_bar.nodes))]
-            nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
-            sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
-            nodes_x.sort()
-            nodes_x_reduced = [i for i in nodes_x if mouseX-i > 0]
-            sort_index_reduced = [i for _,i in zip(nodes_x, sort_index) if mouseX-_ > 0]
-            if len(sort_index_reduced) > 0:
-                day_schedule_bar.type_shown_id = nodes_x.index(max(nodes_x_reduced))
-                l_close = max(nodes_x_reduced)
-                r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
-                day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - 27, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
+    if day_schedule_bar.type_shown == None:
+        if drag_node == -1:
+            if over_clickable(day_schedule_bar.pos_x, day_schedule_bar.pos_y, day_schedule_bar.wid, day_schedule_bar.hei):
+                #Find closest left node
+                sort_index = [i for i in range(len(day_schedule_bar.nodes))]
+                nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
+                sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
+                nodes_x.sort()
+                nodes_x_reduced = [i for i in nodes_x if mouseX-i > 0]
+                sort_index_reduced = [i for _,i in zip(nodes_x, sort_index) if mouseX-_ > 0]
+                if len(sort_index_reduced) > 0:
+                    day_schedule_bar.type_shown_id = nodes_x.index(max(nodes_x_reduced))
+                    l_close = max(nodes_x_reduced)
+                    r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
+                    wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
+                    day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
     
-    #Add node
+    #Check if day schedule bar type clicked to change
+    else:
+        if over_clickable(day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y, len(day_schedule_bar.type_shown.txt)*day_schedule_bar.text_size/1.6, day_schedule_bar.text_size*1.6):
+            if day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Activity":
+                day_schedule_bar.types[day_schedule_bar.type_shown_id] = "Break"
+                #Find closest left node
+                sort_index = [i for i in range(len(day_schedule_bar.nodes))]
+                nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
+                sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
+                nodes_x.sort()
+                nodes_x_reduced = [i for i in nodes_x if mouseX-i > 0]
+                sort_index_reduced = [i for _,i in zip(nodes_x, sort_index) if mouseX-_ > 0]
+                if len(sort_index_reduced) > 0:
+                    day_schedule_bar.type_shown_id = nodes_x.index(max(nodes_x_reduced))
+                    l_close = max(nodes_x_reduced)
+                    r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
+                    wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
+                    day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
+    
+            elif day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Break":
+                day_schedule_bar.types[day_schedule_bar.type_shown_id] = "Activity"
+                #Find closest left node
+                sort_index = [i for i in range(len(day_schedule_bar.nodes))]
+                nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
+                sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
+                nodes_x.sort()
+                nodes_x_reduced = [i for i in nodes_x if mouseX-i > 0]
+                sort_index_reduced = [i for _,i in zip(nodes_x, sort_index) if mouseX-_ > 0]
+                if len(sort_index_reduced) > 0:
+                    day_schedule_bar.type_shown_id = nodes_x.index(max(nodes_x_reduced))
+                    l_close = max(nodes_x_reduced)
+                    r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
+                    wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
+                    day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
+    
+        
+        else:
+            day_schedule_bar.type_shown = None
+
+
+def mousereleased():
+    global day_schedule_bar, drag_node
+    day_schedule_bar.dragged = False
+    drag_node = -1
+    
+#Add node
 def addNode():
 #If not already filled with nodes
     if len(day_schedule_bar.nodes)-1 < int(day_schedule_bar.wid/day_schedule_bar.drag_change):
@@ -205,33 +272,8 @@ def addNode():
                 
             if open_space == True:
                 day_schedule_bar.nodes.append(node((check_pos - day_schedule_bar.pos_x)/day_schedule_bar.wid, 20, time_placed))
-                day_schedule_bar.types.append("Game")
+                day_schedule_bar.types.append("Activity")
                 found_open = True
-
-        
-def mousereleased():
-    global drag_node, last_clicked
-    if drag_node != -1:
-        
-        if day_schedule_bar.dragged == False:
-            raw_time = int(day_schedule_bar.nodes[drag_node].time)
-            if raw_time + day_schedule_bar.start_time*60 - 13*60 >= 0:
-                raw_time += 60
-            
-            if len(str(raw_time % 60)) == 2:
-                proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, raw_time % 60)
-            else:
-                if raw_time % 60 < 10:
-                    proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, "0" + str(raw_time % 60))
-                else:
-                    proper_time = "{0}:{1}".format(((raw_time // 60) + day_schedule_bar.start_time) % 13, str(raw_time % 60) + "0")
-            
-            day_schedule_bar.time_shown = text_display(str(day_schedule_bar.nodes[drag_node].time), day_schedule_bar.nodes[drag_node].pos_x - (len(proper_time)-1)*6.3, day_schedule_bar.pos_y + day_schedule_bar.hei*3.5)
-        
-        last_clicked = drag_node
-        drag_node = -1
-    
-    day_schedule_bar.dragged = False
     
 
 #Get sign of a number (If it is 0, it will return pre-defined value y
