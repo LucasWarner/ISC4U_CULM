@@ -1,9 +1,9 @@
 
 # -------------------------------------------------------------------------------
 
-# Name:           start_page.py
+# Name:           Main.py
 
-# Purpose:        start_page for final project
+# Purpose:        Main file for final project
 
 # Author:         Warner.Lucas, McKeen.Kaden
 
@@ -27,10 +27,11 @@ def settings():
         fullScreen()
     else:
         size(800,600)
+        
 def setup():
-    global Start_Page, first_page, second_page, locked,a
-
+    global Start_Page, first_page, second_page, locked, a, b
     a=3
+    b=30
     #Set up opening page
     second_page = False
     first_page = True
@@ -51,14 +52,13 @@ def setup_2():
     time_menu=["Playing Times","Weekly Schedule","Month Schedule"]
     Match_menu=["Match Options","Preview"]
     second_page = True
-    
     schedule=False
     input=False
     team =False
-    
     ScheduleBar.Setup()
     hs1 = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
-    inputs()
+    #team_names()
+    daily_schedule()
 def draw():
     #Updates
     if first_page == True:
@@ -129,12 +129,12 @@ def update2():
     if schedule:
         ScheduleBar.update()
         Schedule_Update()
+        Input.update()
     if input:
-        #A lot more work
-        #Input.inputs.append(Input.input(0,dim(100),dim(200,'y'),dim(25,'y'),dim(150),dim(20, 'y'))
         Input.update()
         Team_Update()
-def inputs(s=''):
+        
+def team_names(s=''):
     if s=='a':
         Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     elif s=='p':
@@ -143,6 +143,16 @@ def inputs(s=''):
         Input.inputs=[]
         for j in range(a):
             Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(hs1.sPos-hs1.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+            
+def daily_schedule(s=''):
+    if s=='a':
+        Input.inputs.append(Input.input(b,dim(350),dim(220+(30*(b-29)),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+    elif s=='p':
+        Input.inputs.pop()
+    else:
+        for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
+            Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+            
 def Team_Update():
     global a,over_add_button,over_remove_button,ScrollY,locked
     fill(255)
@@ -188,21 +198,23 @@ def Schedule_Update():
     add_node_button = Button.Button(dim(370), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
     add_node_button.display(0,0,0,255,0,0,0,0)
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,a
+    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,a,b
     if second_page:
         i=0
         if schedule:
             if add_node:
                 ScheduleBar.addNode()
+                b+=1
+                daily_schedule('a')
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
             if over_add_button:
                 a+=1
-                inputs('a')
+                team_names('a')
             if over_remove_button:
                 a-=1
-                inputs('p')
+                team_names('p')
         
         if first_drop_menu==False:
             if clickable_list[i]==True:
@@ -213,11 +225,9 @@ def mousePressed():
         if second_drop_menu==False:
             if clickable_list[i]==True:
                 schedule = not schedule
-                input, team, weekly = (False,)*3
+                input, team = (False,)*2
                 '''
                 if clickable_list[1]==True:
-                    weekly = not weekly
-                if clickable_list[2]==True:
                     monthly = not monthly
                 '''
         if over_test_button:
@@ -245,12 +255,7 @@ def mouseReleased():
 def keyPressed():
     if second_page:
         Input.keypressed()
-        
-        
-        
-        
-        
-        
+          
 def over_clickable(x, y, w, h):
     return x <= mouseX <= x + w and y <= mouseY <= y + h
 #All dimensions remain in constant ratios of window size
@@ -266,12 +271,7 @@ def full_bol():
             FullScreen = str(Line[12:])
         Settings.close()
         return FullScreen
-    
-    
-    
-    
-    
-    
+
 class Scrollbar(object): # scroll bar class
     def __init__ (self,xp, yp, sw, sh, l):
         global sWidth, sHeight, xPos, yPos, sPos, newsPos, sPosMin, sPosMax, loose, ratio
