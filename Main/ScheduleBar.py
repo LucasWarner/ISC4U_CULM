@@ -28,7 +28,6 @@ class schedule_bar(object):
         self.text_size = text_size
         self.dragged = False
         self.start_time = start_time
-        self.titles = ["Activity #1", "Activity #2"]
         
     def create_bars(self, id, sort_index):
         if day_schedule_bar.types[id] == "Activity":
@@ -111,6 +110,7 @@ def Setup():
 
 
 def update():
+    removeNode()
     #rect(45, 190, 410, 50)
     #make Bars
     noStroke()
@@ -190,8 +190,8 @@ def mousepressed():
                 
     
     #Check if day schedule bar clicked
-    #If it wasn't a node that was pressed on (Because then we wouldn't want the bar to be activated)
     if day_schedule_bar.type_shown == None:
+        #If it wasn't a node that was pressed on (Because then we wouldn't want the bar to be activated)
         if drag_node == -1:
             if over_clickable(day_schedule_bar.pos_x, day_schedule_bar.pos_y, day_schedule_bar.wid, day_schedule_bar.hei):
                 #Find closest left node
@@ -207,8 +207,7 @@ def mousepressed():
                     r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
                     wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
                     day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
-    
-    #Check if day schedule bar type clicked to change
+                    
     else:
         if over_clickable(day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y, len(day_schedule_bar.type_shown.txt)*day_schedule_bar.text_size/1.6, day_schedule_bar.text_size*1.6):
             if day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Activity":
@@ -253,7 +252,6 @@ def mousereleased():
     day_schedule_bar.dragged = False
     drag_node = -1
     
-#Add node
 def addNode():
 #If not already filled with nodes
     if len(day_schedule_bar.nodes)-1 < int(day_schedule_bar.wid/day_schedule_bar.drag_change):
@@ -274,7 +272,15 @@ def addNode():
                 day_schedule_bar.nodes.append(node((check_pos - day_schedule_bar.pos_x)/day_schedule_bar.wid, 20, time_placed))
                 day_schedule_bar.types.append("Activity")
                 found_open = True
-    
+
+def removeNode():
+    if len(day_schedule_bar.nodes) > 3:
+        sort_index = [i for i in range(len(day_schedule_bar.nodes))]
+        nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
+        sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
+        nodes_x.sort()
+        del day_schedule_bar.nodes[sort_index[-2]]
+        del day_schedule_bar.types[-1]
 
 #Get sign of a number (If it is 0, it will return pre-defined value y
 def sign(x, y):
