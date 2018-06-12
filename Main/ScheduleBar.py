@@ -110,7 +110,6 @@ def Setup():
 
 
 def update():
-    removeNode()
     #rect(45, 190, 410, 50)
     #make Bars
     noStroke()

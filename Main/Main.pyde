@@ -30,6 +30,7 @@ def settings():
         
 def setup():
     global Start_Page, first_page, second_page, locked, a, b
+    textFont(createFont("Helvetica", 20))
     a=3
     b=30
     #Set up opening page
@@ -210,11 +211,11 @@ def mousePressed():
                 b+=1
                 daily_schedule('a')
             if delete_node:
-                print('y')
-                #ScheduleBar.removeNode()
-                #b-=1
-                #daily_schedule('a')
+                ScheduleBar.removeNode()
+                b-=1
+                daily_schedule('p')
             ScheduleBar.mousepressed()
+            Input.mousepressed()
         if input:
             Input.mousepressed()
             if over_add_button:

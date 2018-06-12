@@ -47,19 +47,22 @@ def update(string):
         if each_input.y>70 and each_input.y<750:
             if each_input.id < 30 and string == 'teams':
                 each_input.draw_input()
+                
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
             if each_input.id < 40 and each_input.id >= 30 and string == 'daily':
                 each_input.draw_input()
                 
-        if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
-            cursor(TEXT)
-            over_input = True
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
     
         if each_input.txt != "":
             fill(0)
             textAlign(LEFT)
             
             width_score = stringWidth(each_input.txt,'Helvetica', 20)
-            print(width_score)
             if width_score < 140:
                 each_input.txt_show = each_input.txt
                 addOne = 1
@@ -81,7 +84,6 @@ def update(string):
                     
                     each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
             
-            textFont(createFont("Helvetica", 20))
             text(each_input.txt_show, each_input.x, each_input.y + each_input.text_size)
             
             if each_input.activated == True:
