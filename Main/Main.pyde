@@ -57,7 +57,7 @@ def setup_2():
     team =False
     ScheduleBar.Setup()
     hs1 = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
-    #team_names()
+    team_names()
     daily_schedule()
 def draw():
     #Updates
@@ -129,9 +129,9 @@ def update2():
     if schedule:
         ScheduleBar.update()
         Schedule_Update()
-        Input.update()
+        Input.update('daily')
     if input:
-        Input.update()
+        Input.update('teams')
         Team_Update()
         
 def team_names(s=''):
@@ -172,7 +172,6 @@ def Team_Update():
         remove_button.display(0,0,0,255,0,0,0,0)
     else:
         over_remove_button = False
-        
     scrollY = getPos()
     display()
     if overEvent(): 
@@ -193,12 +192,16 @@ def Team_Update():
       hs1.sPos = hs1.sPos + (hs1.newsPos-hs1.sPos)/hs1.loose
       
 def Schedule_Update():
-    global add_node
-    add_node=over_clickable(dim(400), dim(160, 'y'), dim(180), dim(30, 'y'))
-    add_node_button = Button.Button(dim(370), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
+    global add_node,delete_node
+    add_node=over_clickable(dim(525), dim(160, 'y'), dim(160), dim(30, 'y'))
+    add_node_button = Button.Button(dim(490), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
     add_node_button.display(0,0,0,255,0,0,0,0)
+    delete_node=over_clickable(dim(280), dim(160, 'y'), dim(190), dim(30, 'y'))
+    delete_node_button = Button.Button(dim(250), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Remove Time Node")
+    delete_node_button.display(0,0,0,255,0,0,0,0)
+    
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,a,b
+    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,delete_node,a,b
     if second_page:
         i=0
         if schedule:
@@ -206,6 +209,11 @@ def mousePressed():
                 ScheduleBar.addNode()
                 b+=1
                 daily_schedule('a')
+            if delete_node:
+                print('y')
+                #ScheduleBar.removeNode()
+                #b-=1
+                #daily_schedule('a')
             ScheduleBar.mousepressed()
         if input:
             Input.mousepressed()
