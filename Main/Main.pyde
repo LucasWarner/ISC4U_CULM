@@ -193,13 +193,25 @@ def Team_Update():
       hs1.sPos = hs1.sPos + (hs1.newsPos-hs1.sPos)/hs1.loose
       
 def Schedule_Update():
-    global add_node,delete_node
-    add_node=over_clickable(dim(525), dim(160, 'y'), dim(160), dim(30, 'y'))
+    global add_node,delete_node, range_10, range_15, range_30
+    add_node = over_clickable(dim(525), dim(160, 'y'), dim(160), dim(30, 'y'))
     add_node_button = Button.Button(dim(490), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
     add_node_button.display(0,0,0,255,0,0,0,0)
-    delete_node=over_clickable(dim(280), dim(160, 'y'), dim(190), dim(30, 'y'))
+    delete_node = over_clickable(dim(280), dim(160, 'y'), dim(190), dim(30, 'y'))
     delete_node_button = Button.Button(dim(250), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Remove Time Node")
     delete_node_button.display(0,0,0,255,0,0,0,0)
+    
+    range_10 = over_clickable(dim(200), dim(190, 'y'), dim(160), dim(30, 'y'))
+    range_10_button = Button.Button(dim(200), dim(190, 'y'), dim(180), dim(30, 'y'),dim(400),"10 Minute Range")
+    range_10_button.display(0,0,0,255,0,0,0,0)
+    
+    range_15 = over_clickable(dim(380), dim(190, 'y'), dim(160), dim(30, 'y'))
+    range_15_button = Button.Button(dim(380), dim(190, 'y'), dim(180), dim(30, 'y'),dim(400),"15 Minute Range")
+    range_15_button.display(0,0,0,255,0,0,0,0)
+    
+    range_30 = over_clickable(dim(560), dim(190, 'y'), dim(160), dim(30, 'y'))
+    range_30_button = Button.Button(dim(560), dim(190, 'y'), dim(180), dim(30, 'y'),dim(400),"30 Minute Range")
+    range_30_button.display(0,0,0,255,0,0,0,0)
     
 def mousePressed():
     global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,delete_node,a,b
@@ -214,6 +226,12 @@ def mousePressed():
                 ScheduleBar.removeNode()
                 b-=1
                 daily_schedule('p')
+            if range_10:
+                ScheduleBar.rangeOption(1)
+            if range_15:
+                ScheduleBar.rangeOption(2)
+            if range_30:
+                ScheduleBar.rangeOption(3)
             ScheduleBar.mousepressed()
             Input.mousepressed()
         if input:

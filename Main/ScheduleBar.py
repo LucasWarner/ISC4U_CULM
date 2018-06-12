@@ -93,8 +93,22 @@ def rangeOption(type):
         day_schedule_bar.smallest_interval = 15
     if type == 3:
         day_schedule_bar.smallest_interval = 30
-    if type == 4:
-        day_schedule_bar.smallest_interval = 60
+    
+    #Change drag change
+    day_schedule_bar.drag_change = (float(smallest_time_interval)/float(time_minutes))*float(wid)
+    #Round node positions to nearest interval type (Must happen before changing nodes)
+    
+    #***Don't forget to also change the time_total variable after changing the ends***
+    
+    
+    #Round end positions to nearest interval type
+    for n in nodes:
+        if n.time > round(n.time / day_schedule_bar.smallest_interval)*day_schedule_bar.smallest_interval:
+            n.pos_x = (float(n.time) - (float(n.time) % day_schedule_bar.smallest_interval) / day_schedule_bar.time_total
+            n.time = int(float(n.time) - (float(n.time) % day_schedule_bar.smallest_interval))
+        else:
+            n.pos_x = (float(n.time) - (day_schedule_bar.smallest_interval - (float(n.time) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total
+            n.time = int(float(n.time) - (day_schedule_bar.smallest_interval - (float(n.time) % day_schedule_bar.smallest_interval)))
 
 
 def Setup():
