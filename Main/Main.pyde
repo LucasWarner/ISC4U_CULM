@@ -39,7 +39,7 @@ def setup():
     Start_Page = StartPage.StartPage(dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     locked = False
 def setup_2():
-    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, schedule, input, team, vertical_Scrollbar
+    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, schedule, input, team, vertical_Scrollbar
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -57,6 +57,7 @@ def setup_2():
     schedule=False
     input=False
     team =False
+    matches=False
     ScheduleBar.Setup()
     vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     team_names()
@@ -108,10 +109,10 @@ def update2():
     Main_Page.update()
     clickable_list=[]
     side_bar=[]
+    
     over_teams_button = over_clickable(0, dim(40, 'y'), dim(150), dim(30, 'y'))
     side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Teams and Info",True,first_drop_menu))
     Y=30
-    
     if first_drop_menu==False:
         for opt in team_menu:
             side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,dim(14,'y')))
@@ -138,12 +139,14 @@ def update2():
     if schedule:
         ScheduleBar.update()
         Schedule_Update()
+        daily_schedule()
         Input.update('daily')
     if input:
         Input.update('teams')
+        team_names()
         Team_Update()
         
-def team_names(s=''):
+def team_names(s='1'):
     if s=='a':
         Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
     elif s=='p':
@@ -222,7 +225,7 @@ def Schedule_Update():
     range_30_button.display(0,0,0,255,0,0,0,0)
     
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu,schedule,input,add_node,delete_node,a,b
+    global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule,input,add_node,delete_node,a,b
     if second_page:
         i=0
         if schedule:
@@ -278,6 +281,8 @@ def mousePressed():
             first_drop_menu= not first_drop_menu
         if over_scheduling_button:
             second_drop_menu= not second_drop_menu
+        if over_matchmaking_button:
+           third_drop_menu= not third_drop_menu
     if first_page:
         if over_exit_button:
             exit()
