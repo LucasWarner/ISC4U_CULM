@@ -143,7 +143,6 @@ def update2():
         Input.update('daily')
     if input:
         Input.update('teams')
-        team_names()
         Team_Update()
         
 def team_names(s='1'):
@@ -152,7 +151,6 @@ def team_names(s='1'):
     elif s=='p':
         Input.inputs.pop()
     else:
-        Input.inputs=[]
         for j in range(a):
             Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
             

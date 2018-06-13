@@ -262,10 +262,17 @@ def rangeOption(type):
     if type == 3:
         day_schedule_bar.smallest_interval = 30
     
+    sort_index = [i for i in range(len(day_schedule_bar.nodes))]
+    nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
+    sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
+    nodes_x.sort()
+    
+    rightmost_index = sort_index[nodes_x.index(max(nodes_x))]
+    leftmost_index = sort_index[nodes_x.index(min(nodes_x))]
     
     #Change end nodes based on new interval
-    for n in range(3):
-        if n != 1:
+    for n in range(len(day_schedule_bar.nodes)):
+        if n == rightmost_index or n == leftmost_index:
             time = day_schedule_bar.nodes[n].time + day_schedule_bar.start_time
             remaining_time = time % day_schedule_bar.smallest_interval
             
@@ -281,7 +288,7 @@ def rangeOption(type):
     
     #Change the rest of the nodes accordingly
     for n in range(len(day_schedule_bar.nodes)):
-        if n != 0 and n != 2:
+        if n != rightmost_index and n != leftmost_index:
             time = day_schedule_bar.nodes[n].time + day_schedule_bar.start_time
             remaining_time = time % day_schedule_bar.smallest_interval
             
