@@ -1,9 +1,8 @@
 class StartPage(object):
-    def __init__ (self,textS,tx,ty,x,y,s,FS):
+    def __init__ (self,tx,ty,x,y,s,FS):
         startPage = loadImage("Cover.jpeg")
         yes = loadImage("CheckMark.png")
         no = loadImage("RedNo.png")
-        textSize(textS)
         image(startPage,0,0,width,height)
         if FS == "True":
             image(yes,x,y,s,s)

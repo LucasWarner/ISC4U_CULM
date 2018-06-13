@@ -1,5 +1,5 @@
 class Button(object):
-    def __init__ (self,Xpos,Ypos,wid,high,rad,tex="null",ist=False,rotri=False, textSize=18):
+    def __init__ (self,Xpos,Ypos,wid,high,rad,tex="null",ist=False,rotri=False, textSize=20):
         self.x = Xpos
         self.y = Ypos
         self.w = wid
@@ -14,7 +14,7 @@ class Button(object):
         self.ih = self.h - self.h/4
         self.lst = ist
         self.rotation = rotri
-        self.txSz=textSize
+        self.txSz=self.dim(textSize,'y')
         
     def display(self,inRed=210,inGreen=215,inBlue=45,textColour=0,inStrokeW=1,outStrokeW=2,inStroke=240,outStroke=240):#,outred=inRed,outGreen=inGreen,outBlue=inBlue):
         if inRed!=0 and inGreen!=0 and inBlue!=0:
@@ -44,3 +44,8 @@ class Button(object):
         text(self.text, self.tx, self.ty)
     def Del(self):
         del self
+    def dim(self,y, m = 'X'): 
+        if m == 'X':
+            return width*y/800
+        else:
+            return height*y/600
