@@ -89,7 +89,7 @@ def update(string):
             if each_input.activated == True:
                 if (time.time()-time.time()%0.5) % 1 == 0:
                     stroke(0)
-                    line_x = stringWidth(each_input.txt_show[:each_input.edit_position-each_input.show_start],'Helvetica', 18)
+                    line_x = stringWidth(each_input.txt_show[:each_input.edit_position-each_input.show_start],'Helvetica', 20)
                     strokeWeight(1)
                     line(each_input.x + line_x, each_input.y + each_input.hei/6, each_input.x + line_x, each_input.y + each_input.hei/1.2)
     
