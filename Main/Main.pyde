@@ -50,8 +50,8 @@ def setup_2():
     third_drop_menu=True
     second_drop_menu=True
     first_drop_menu=True
-    team_menu=["Add/Remove Teams","event information"]
-    time_menu=["Playing Times","Month Schedule"]
+    team_menu=["Teams & Matches","Event Information"]
+    time_menu=["Daily Schedule","Monthly Schedule"]
     match_menu=["Match Options","Preview"]
     second_page = True
     schedule=False
@@ -169,7 +169,7 @@ def daily_schedule(s=''):
 def Team_Update():
     global a,over_add_button,over_remove_button,ScrollY,locked
     fill(255)
-    text("Add/Remove Teams",dim(380),dim(50,'y') )
+    text("Teams & Matches",dim(380),dim(50,'y') )
     for j in range(a):
         if dim(80 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')>70 and dim(80 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')<750:
             text(str(j+1) + ". Name:",dim(240),dim(100 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'))
@@ -181,7 +181,7 @@ def Team_Update():
         over_add_button = False
     if a>1:
         over_remove_button = over_clickable(dim(410), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(150), dim(30, 'y'))
-        remove_button = Button.Button(dim(380), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(180), dim(30, 'y'),dim(400),"remove Team")
+        remove_button = Button.Button(dim(380), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(180), dim(30, 'y'),dim(400),"Remove Team")
         remove_button.display(0,0,0,255,0,0,0,0)
     else:
         over_remove_button = False
@@ -250,10 +250,10 @@ def mousePressed():
                 ScheduleBar.rangeOption(2)
             if range_30:
                 ScheduleBar.rangeOption(3)
-            #if over_plus_button:
-                #ScheduleBar.changeStartTime()
-            #if over_minus_button:
-                #ScheduleBar.changeStartTime()
+            if over_plus_button:
+                ScheduleBar.changeEndNodeTime(1)
+            if over_minus_button:
+                ScheduleBar.changeEndNodeTime(-1)
             
             ScheduleBar.mousepressed()
             Input.mousepressed()

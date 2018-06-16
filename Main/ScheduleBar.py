@@ -123,13 +123,17 @@ def update():
             if over_clickable(day_schedule_bar.nodes[n].pos_x-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 over = True
                 raw_time = int(day_schedule_bar.nodes[n].time)
-                if ((raw_time // 60) + (day_schedule_bar.start_time // 60)) - (((raw_time // 60) + (day_schedule_bar.start_time // 60)) % 13) > 0:
-                    raw_time += 60
                 
-                if (raw_time % 60) + (day_schedule_bar.start_time % 60) % 10 != 0:
-                    proper_time = "{0}:{1}".format(str(((raw_time // 60) + (day_schedule_bar.start_time // 60)) % 13), (raw_time % 60) + (day_schedule_bar.start_time % 60))
+                minutes = (raw_time + day_schedule_bar.start_time) - ((raw_time + day_schedule_bar.start_time) // 60)*60
+                hours = ((raw_time + day_schedule_bar.start_time) // 60)
+                
+                if hours != hours % 13:
+                    hours = (hours % 13) + 1
+                
+                if len(str(minutes)) == 2:
+                    proper_time = "{0}:{1}".format(hours, minutes)
                 else:
-                    proper_time = "{0}:{1}".format(str(((raw_time // 60) + (day_schedule_bar.start_time // 60)) % 13), str((raw_time % 60) + (day_schedule_bar.start_time % 60)) + "0")
+                    proper_time = "{0}:{1}0".format(hours, minutes)
                 
                 day_schedule_bar.time_shown = text_display(proper_time, day_schedule_bar.nodes[n].pos_x - (len(proper_time)-1)*6.3, day_schedule_bar.pos_y + day_schedule_bar.hei*3.5)
                 text(day_schedule_bar.time_shown.txt, day_schedule_bar.time_shown.pos_x, day_schedule_bar.time_shown.pos_y)
@@ -156,16 +160,21 @@ def mousepressed():
                 day_schedule_bar.dragged = False
         else:
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
-                day_schedule_bar.nodes[n].colour = (255,255,0)
                 
                 #Leftmost node clicked
                 if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x:
-                    day_schedule_bar.leftmost_clicked = True
-                    print("L")
+                    day_schedule_bar.leftmost_clicked = not day_schedule_bar.leftmost_clicked 
+                    if day_schedule_bar.leftmost_clicked == True:
+                        day_schedule_bar.nodes[n].colour = (255,255,0)
+                    else:
+                        day_schedule_bar.nodes[n].colour = (0, 162, 232)
                 #Rightmost node clicked
                 elif day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
-                    day_schedule_bar.rightmost_clicked = True
-                    print("R")
+                    day_schedule_bar.rightmost_clicked = not day_schedule_bar.rightmost_clicked
+                    if day_schedule_bar.rightmost_clicked == True:
+                        day_schedule_bar.nodes[n].colour = (255,255,0)
+                    else:
+                        day_schedule_bar.nodes[n].colour = (0, 162, 232)
     
     #Check if day schedule bar clicked
     if day_schedule_bar.type_shown == None:
@@ -314,6 +323,43 @@ def rangeOption(type):
             
             day_schedule_bar.nodes[n].pos_x = (float(day_schedule_bar.nodes[n].time) / float(day_schedule_bar.time_total))*day_schedule_bar.wid + day_schedule_bar.pos_x
 
+
+#Change times of end nodes
+def changeEndNodeTime(direction):
+    global day_schedule_bar
+    if day_schedule_bar.leftmost_clicked:
+        
+        node_in_way = False
+        for n in day_schedule_bar.nodes:
+            if n.time - day_schedule_bar.smallest_interval*direction == 0:
+                node_in_way = True
+        
+        if node_in_way == False:
+            day_schedule_bar.start_time += day_schedule_bar.smallest_interval*direction
+            day_schedule_bar.time_total -= day_schedule_bar.smallest_interval*direction
+            
+            for n in range(len(day_schedule_bar.nodes)):
+                if day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x:
+                    day_schedule_bar.nodes[n].time -= day_schedule_bar.smallest_interval*direction
+                
+    elif day_schedule_bar.rightmost_clicked:
+        node_in_way = False
+        for n in day_schedule_bar.nodes:
+            if n.time - day_schedule_bar.smallest_interval*direction == day_schedule_bar.time_total:
+                node_in_way = True
+        
+        if node_in_way == False and day_schedule_bar.time_total < 25*60:
+            day_schedule_bar.time_total += day_schedule_bar.smallest_interval*direction
+            for n in range(len(day_schedule_bar.nodes)):
+                if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
+                    day_schedule_bar.nodes[n].time += day_schedule_bar.smallest_interval*direction
+    
+    if day_schedule_bar.smallest_interval == 10:
+        rangeOption(1)
+    if day_schedule_bar.smallest_interval == 15:
+        rangeOption(2)
+    if day_schedule_bar.smallest_interval == 30:
+        rangeOption(3)
 
 #Get sign of a number (If it is 0, it will return pre-defined value y
 def sign(x, y):
