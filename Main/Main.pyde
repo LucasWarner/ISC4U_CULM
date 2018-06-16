@@ -39,7 +39,7 @@ def setup():
     Start_Page = StartPage.StartPage(dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     locked = False
 def setup_2():
-    global first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, schedule, input, team, vertical_Scrollbar
+    global over_plus_button, over_minus_button, first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, schedule, input, team, vertical_Scrollbar
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -62,6 +62,8 @@ def setup_2():
     vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     team_names()
     daily_schedule()
+    over_plus_button=False
+    over_minus_button=False
 def draw():
     #Updates
     if first_page == True:
@@ -104,7 +106,7 @@ def update1():
          "\nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
 def update2():
-    global over_teams_button,over_scheduling_button,over_matchmaking_button,side_bar,clickable_list,Y,add_node
+    global over_teams_button,over_scheduling_button,over_matchmaking_button,side_bar,clickable_list,Y,add_node, over_plus_button, over_minus_button
     #Refresh page and variables
     Main_Page.update()
     clickable_list=[]
@@ -147,21 +149,22 @@ def update2():
         
 def team_names(s='1'):
     if s=='a':
-        Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+        Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
         Input.inputs.pop()
     else:
         for j in range(a):
-            Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+            Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
             
 def daily_schedule(s=''):
     if s=='a':
-        Input.inputs.append(Input.input(b,dim(350),dim(220+(30*(b-29)),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+        Input.inputs.append(Input.input(b,dim(350),dim(220+(30*(b-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
         Input.inputs.pop()
     else:
         for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
-            Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(20, 'y')))
+            Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+
             
 def Team_Update():
     global a,over_add_button,over_remove_button,ScrollY,locked
@@ -202,8 +205,12 @@ def Team_Update():
       vertical_Scrollbar.sPos = vertical_Scrollbar.sPos + (vertical_Scrollbar.newsPos-vertical_Scrollbar.sPos)/vertical_Scrollbar.loose
       
 def Schedule_Update():
-    global add_node,delete_node, range_10, range_15, range_30
+    global add_node,delete_node, range_10, range_15, range_30, over_plus_button, over_minus_button
     add_node = over_clickable(dim(525), dim(160, 'y'), dim(160), dim(30, 'y'))
+    plus_button = Button.Button(dim(490), dim(50, 'y'), dim(150), dim(30, 'y'),dim(400),"+",False,False,40)
+    plus_button.display(0,0,0,255,0,0,0,0)
+    minus_button = Button.Button(dim(400), dim(50, 'y'), dim(150), dim(30, 'y'),dim(400),"-",False,False,55)
+    minus_button.display(0,0,0,255,0,0,0,0)
     add_node_button = Button.Button(dim(490), dim(160, 'y'), dim(180), dim(30, 'y'),dim(400),"Add Time Node")
     add_node_button.display(0,0,0,255,0,0,0,0)
     delete_node = over_clickable(dim(280), dim(160, 'y'), dim(190), dim(30, 'y'))
@@ -222,8 +229,10 @@ def Schedule_Update():
     range_30_button = Button.Button(dim(560), dim(190, 'y'), dim(180), dim(30, 'y'),dim(400),"30 Minute Range")
     range_30_button.display(0,0,0,255,0,0,0,0)
     
+    over_plus_button = over_clickable(520, dim(30, 'y'), dim(35), dim(40, 'y'))
+    over_minus_button = over_clickable(425, dim(30, 'y'), dim(35), dim(40, 'y'))
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule,input,add_node,delete_node,a,b
+    global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule,input,add_node,delete_node,a,b, over_plus_button, over_minus_button
     if second_page:
         i=0
         if schedule:
@@ -241,6 +250,11 @@ def mousePressed():
                 ScheduleBar.rangeOption(2)
             if range_30:
                 ScheduleBar.rangeOption(3)
+            #if over_plus_button:
+                #ScheduleBar.changeStartTime()
+            #if over_minus_button:
+                #ScheduleBar.changeStartTime()
+            
             ScheduleBar.mousepressed()
             Input.mousepressed()
         if input:

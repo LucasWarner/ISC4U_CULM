@@ -62,7 +62,7 @@ def update(string):
             fill(0)
             textAlign(LEFT)
             
-            width_score = stringWidth(each_input.txt,'Helvetica', 18)
+            width_score = stringWidth(each_input.txt,'Helvetica', each_input.text_size)
             if width_score < 140:
                 each_input.txt_show = each_input.txt
                 addOne = 1
@@ -80,7 +80,7 @@ def update(string):
                     else:        
                         each_input.show_end -= 1
 
-                    width_score = stringWidth(each_input.txt[each_input.show_start:each_input.show_end],'Helvetica', 18)
+                    width_score = stringWidth(each_input.txt[each_input.show_start:each_input.show_end],'Helvetica', each_input.text_size)
                     
                     each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
             
@@ -89,7 +89,7 @@ def update(string):
             if each_input.activated == True:
                 if (time.time()-time.time()%0.5) % 1 == 0:
                     stroke(0)
-                    line_x = stringWidth(each_input.txt_show[:each_input.edit_position-each_input.show_start],'Helvetica', 20)
+                    line_x = stringWidth(each_input.txt_show[:each_input.edit_position-each_input.show_start],'Helvetica', each_input.text_size)
                     strokeWeight(1)
                     line(each_input.x + line_x, each_input.y + each_input.hei/6, each_input.x + line_x, each_input.y + each_input.hei/1.2)
     
@@ -157,9 +157,7 @@ def mousepressed():
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)
-                    print(mouseX)
-                    print(each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 18))
-                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 18):
+                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', each_input.text_size):
                         if each_input.txt != each_input.txt_show:
                             each_input.edit_position = each_input.txt.index(each_input.txt_show) + cursor_position
                             break
@@ -168,18 +166,25 @@ def mousepressed():
                             break
     
             else:
+                found_position = False
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)
-                    print(mouseX)
-                    print(each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 18))
-                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', 18):
+                    if mouseX < each_input.x + stringWidth(each_input.txt_show[:cursor_position],'Helvetica', each_input.text_size):
                         if each_input.txt != each_input.txt_show:
                             each_input.edit_position = each_input.txt.index(each_input.txt_show) + cursor_position
+                            found_position = True
                             break
                         else:
-                            each_input.edit_position = cursor_position + 2
+                            each_input.edit_position = cursor_position
+                            found_position = True
                             break
+                
+                if found_position == False and mouseX > each_input.x + stringWidth(each_input.txt_show,'Helvetica', each_input.text_size):
+                    if each_input.txt != each_input.txt_show:
+                        each_input.edit_position = each_input.txt.index(each_input.txt_show) + len(each_input.txt_show)
+                    else:
+                        each_input.edit_position = len(each_input.txt_show)
 
     for each_input in inputs:
         if each_input.id != input_clicked:

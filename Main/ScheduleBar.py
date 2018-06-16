@@ -28,6 +28,8 @@ class schedule_bar(object):
         self.text_size = text_size
         self.dragged = False
         self.start_time = start_time
+        self.leftmost_clicked = False
+        self.rightmost_clicked = False
         
     def create_bars(self, id, sort_index):
         if day_schedule_bar.types[id] == "Activity":
@@ -38,8 +40,8 @@ class schedule_bar(object):
 
 
 class node(object):
-    def __init__ (self, x_pos, siz, time):
-        self.colour = (255,255,255)
+    def __init__ (self, x_pos, siz, time, colour=(0, 162, 232)):
+        self.colour = colour
         self.pos_x = x_pos * day_schedule_bar.wid + day_schedule_bar.pos_x
         self.pos_y = day_schedule_bar.pos_y
         self.s = siz
@@ -94,6 +96,7 @@ def update():
     fill(0, 162, 232)
     ellipseMode(CENTER)
     for n in range (len(day_schedule_bar.nodes)):
+        fill(day_schedule_bar.nodes[n].colour[0],day_schedule_bar.nodes[n].colour[1],day_schedule_bar.nodes[n].colour[2])
         ellipse(day_schedule_bar.nodes[n].pos_x, day_schedule_bar.nodes[n].pos_y + day_schedule_bar.hei/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s)
     
     #Move nodes
@@ -151,7 +154,18 @@ def mousepressed():
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 drag_node = n
                 day_schedule_bar.dragged = False
+        else:
+            if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
+                day_schedule_bar.nodes[n].colour = (255,255,0)
                 
+                #Leftmost node clicked
+                if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x:
+                    day_schedule_bar.leftmost_clicked = True
+                    print("L")
+                #Rightmost node clicked
+                elif day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
+                    day_schedule_bar.rightmost_clicked = True
+                    print("R")
     
     #Check if day schedule bar clicked
     if day_schedule_bar.type_shown == None:
