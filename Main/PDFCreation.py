@@ -2,6 +2,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 import datetime
 import math
+import ScheduleBar
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
 def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek):
@@ -93,11 +94,58 @@ def monthly_schedule(c):
     
     drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek)
 
-def sign(x):
-    if x > 0:
-        return 1
-    if x < 0:
-        return -1
+def printTime(raw_time):   
+    minutes = (raw_time + ScheduleBar.day_schedule_bar.start_time) - ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60)*60
+    hours = ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60)
+    
+    if hours != hours % 13:
+        hours = (hours % 13) + 1
+    
+    if len(str(minutes)) == 2:
+        proper_time = "{0}:{1}".format(hours, minutes)
+    else:
+        proper_time = "{0}:{1}0".format(hours, minutes)
+    return proper_time
+
+def drawDailySchedule(c, sections, font_size, wid, y_offset):
+    c.setStrokeColorRGB(0,0,0)
+    c.setFillColorRGB(0,0,0)
+    c.setFont('Helvetica', font_size)
+    
+    if len(sections) <= 10:
+        for t in range(len(sections)):
+            c.drawCentredString (wid, -t*20 + y_offset, sections[t])
+    else:
+        for t in range(len(sections)):
+            if t <= int((len(sections)-1)/2):
+                c.drawCentredString(wid - int(wid/3), -t*20 + y_offset, sections[t])
+            else:
+                if len(sections) % 2 == 0:
+                    c.drawCentredString(wid + int(wid/3), -(t-int(len(sections)/2))*20 + y_offset, sections[t])
+                else:
+                    c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(sections)/2))*20 + y_offset, sections[t])
+
+def daily_schedule(c):
+    times = []
+    for node in ScheduleBar.day_schedule_bar.nodes:
+        times.append(node.time)
+    times.sort()
+    
+    section_type = ScheduleBar.day_schedule_bar.types
+    
+    sections = []
+    for activities in range(len(times)-1):
+        print_text = ''
+        proper_time_1 = printTime(int(times[activities]))
+        proper_time_2 = printTime(int(times[activities+1]))
+        activity_type = section_type[activities]
+        sections.append("{0} : {1} - {2}".format(proper_time_1,proper_time_2,activity_type))
+    
+    font_size = 15
+    wid = 306
+    y_offset = 700
+    
+    drawDailySchedule(c, sections, font_size, wid, y_offset)
 
 def drawMatches(c, teams, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
@@ -116,11 +164,12 @@ def drawMatches(c, teams, font_size, wid, y_offset):
                     c.drawCentredString(wid + int(wid/3), -(t-int(len(teams)/2))*20 + y_offset, teams[t])
                 else:
                     c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(teams)/2))*20 + y_offset, teams[t])
+
 def matches(c, width):
     font_size = 15
-    wid = width
+    wid = 306
     teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
-    y_offset = 400
+    y_offset = 700
     
     drawMatches(c, teams, font_size, wid, y_offset)
     
@@ -130,10 +179,17 @@ def createPDF():
     pdfName = "SampleMatchSheet.pdf"
     
     c = canvas.Canvas(pdfName, pagesize=letter)
-    #monthly_schedule(c)
-    matches(c, 306)
+    monthly_schedule(c)
+    daily_schedule(c)
+    #matches(c)
     
     try:
         c.save()
     except IOError:
         print("\nPlease close the PDF file before generating anew")
+        
+def sign(x):
+    if x > 0:
+        return 1
+    if x < 0:
+        return -1

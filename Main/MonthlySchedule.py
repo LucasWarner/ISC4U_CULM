@@ -1,11 +1,5 @@
 import datetime
 
-"""
-Information we need from the outside:
-    x/y position of middle of graph
-    the desired month
-
-"""
 s = 50
 rows = 5
 collumns = 7
