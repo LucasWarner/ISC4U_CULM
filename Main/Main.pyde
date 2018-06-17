@@ -19,7 +19,7 @@ import ScheduleBar
 import Input
 import PDFCreation
 
-PDFCreation.createPDF()
+#PDFCreation.createPDF()
 
 def settings():
     #set fullscreen or (800,600)
@@ -252,6 +252,7 @@ def mousePressed():
                 ScheduleBar.rangeOption(3)
             if over_plus_button:
                 ScheduleBar.changeEndNodeTime(1)
+                PDFCreation.createPDF()
             if over_minus_button:
                 ScheduleBar.changeEndNodeTime(-1)
             
