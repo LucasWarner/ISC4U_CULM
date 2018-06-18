@@ -65,8 +65,6 @@ def monthly_schedule(c):
     rows = 5
     collumns = 7
     
-    x_offset = 30
-    y_offset = 30
     topPadding = 50
     
     thisMonth = 0
@@ -89,8 +87,8 @@ def monthly_schedule(c):
     
     print(d)
     
-    x_offset = 25#Main.width/30
-    y_offset = 25#Main.width/30
+    x_offset = 25
+    y_offset = 300
     
     drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek)
 
@@ -143,7 +141,7 @@ def daily_schedule(c):
     
     font_size = 15
     wid = 306
-    y_offset = 700
+    y_offset = 225
     
     drawDailySchedule(c, sections, font_size, wid, y_offset)
 
@@ -151,6 +149,8 @@ def drawMatches(c, teams, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
     c.setFont('Helvetica', font_size)
+    
+    #c.drawCentredString(int(wid/2), y_offset, "Daily Schedule")
     
     if len(teams) <= 10:
         for t in range(len(teams)):
@@ -169,7 +169,7 @@ def matches(c, width):
     font_size = 15
     wid = 306
     teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
-    y_offset = 700
+    y_offset = 200
     
     drawMatches(c, teams, font_size, wid, y_offset)
     
@@ -180,6 +180,7 @@ def createPDF():
     
     c = canvas.Canvas(pdfName, pagesize=letter)
     monthly_schedule(c)
+    #c.showPage()
     daily_schedule(c)
     #matches(c)
     
