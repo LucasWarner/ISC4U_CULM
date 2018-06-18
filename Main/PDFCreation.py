@@ -4,6 +4,7 @@ import datetime
 import math
 import ScheduleBar
 import Input
+import MatchOrgAndSep
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
 def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
@@ -179,50 +180,55 @@ def drawMatches(c, teams, font_size, wid, y_offset):
     else:
         for t in range(len(teams)):
             if t <= int((len(teams)-1)/2):
-                c.drawCentredString(wid - int(wid/3), -t*20 + y_offset, teams[t])
+                c.drawCentredString(wid - int(wid/2.4), -t*20 + y_offset, teams[t])
             else:
                 if len(teams) % 2 == 0:
-                    c.drawCentredString(wid + int(wid/3), -(t-int(len(teams)/2))*20 + y_offset, teams[t])
+                    c.drawCentredString(wid + int(wid/2.4), -(t-int(len(teams)/2))*20 + y_offset, teams[t])
                 else:
-                    c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(teams)/2))*20 + y_offset, teams[t])
+                    c.drawCentredString(wid + int(wid/2.4), -((t-1)-int(len(teams)/2))*20 + y_offset, teams[t])
 
 def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
     font_size = 15
     wid = 306
     
+    matches = []
+    teams = []
     for each_input in Input.inputs:
         if each_input.id < 30:
              teams.append(each_input.txt)
-    
-    if len(teams) == 0:
+
+    if teams.count('') == len(teams):
         team_number_input = None
         for each_input in Input.inputs:
             if each_input.id == 2000:
                 team_number_input = each_input
                 break
         
-    if team_number_input.txt.isdigit() and team_number_input.txt != '':
-        MatchOrgAndSep(int(team_number_input.txt))
-    else:
-        MatchOrgAndSep(10)
-        #teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
+        if team_number_input.txt.isdigit() and team_number_input.txt != '':
+            matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))])
+        
+        
+        #matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(10)])
+    #else:
+    
+    #matches = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
     
     if daily_schedule_on_new_page[0] == True:
-        if daily_schedule_on_new_page[1] + len(teams) < 65:
+        if daily_schedule_on_new_page[1] + len(matches) < 65:
             y_offset = 600 - daily_schedule_on_new_page[1]*10
-            drawMatches(c, teams, font_size, wid, y_offset)
+            drawMatches(c, matches, font_size, wid, y_offset)
         else:
             c.showPage()
             y_offset = 700
-            drawMatches(c, teams, font_size, wid, y_offset)
+            drawMatches(c, matches, font_size, wid, y_offset)
     else:
         if daily_schedule_on_new_page[1] != None or monthly_schedule_on:
             c.showPage()
             y_offset = 700
-            drawMatches(c, teams, font_size, wid, y_offset)
+            drawMatches(c, matches, font_size, wid, y_offset)
         else:
             y_offset = 700
-            drawMatches(c, teams, font_size, wid, y_offset)
+            drawMatches(c, matches, font_size, wid, y_offset)
     
 def createPDF():
     width, height = letter

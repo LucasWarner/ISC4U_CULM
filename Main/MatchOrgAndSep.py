@@ -130,11 +130,11 @@ def MatchMake(teamsNamed):
 
 
     if len(teamsNamed) != 0:
-        #print(calculateSeparationScore(games[0],games[1]))
-        printGames(games, teamsNamed, True)
+        return printGames(games, teamsNamed, True)
     else:
-        #print(calculateSeparationScore(games[0],games[1]))
-        printGames(games, None, False)
+        return printGames(games, None, False)
+
+
 def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
 
     #Team names
@@ -214,26 +214,24 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
 
 
 def printGames(games, assignTeams, teamNameReturn):
-    textSize(9)
-    fill(255)
+    matches = []
     if teamNameReturn == False:
         for i in range(len(games[0])):
             if i not in games[2]:
-                text("{0} vs {1}".format(games[0][i], games[1][i]),0,10*i)
+                matches.append("Match {0} vs {1}".format(i+1, games[0][i], games[1][i]))
             else:
-                text("{0} vs {1} ({1} as filler)".format(games[0][i], games[1][i]),0,10*i)
+               matches.append("Match {0} vs {1} ({1} as filler)".format(i+1, games[0][i], games[1][i]))
     else:
         for i in range(len(games[0])):
             if i not in games[2]:
-                text("Match {0}: {1} vs {2}".format(i, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]),0,10*i)
+                matches.append("Match {0}: {1} vs {2}".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
             else:
-                text("Match {0}: {1} vs {2} ({2} as filler)".format(i, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]),0,10*i) 
+                matches.append("Match {0}: {1} vs {2} ({2} as filler)".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
 
-#Now for separation!
+    return matches
+
 
 """
-Idea 1:
-
 The Shift Organization
 Go through every team matching and shift them
 Tries shifting the match up and down
@@ -265,13 +263,3 @@ def calculateSeparationScore(matchesLeft, matchesRight):
 
 def copyList(a):
     return [i[:] for i in a]
-
-
-"""
-if len(teamsNamed) != 0:
-    print(calculateSeparationScore(games[0],games[1]))
-    printGames(games, teamsNamed, True)
-else:
-    print(calculateSeparationScore(games[0],games[1]))
-    printGames(games, None, False)
-"""
