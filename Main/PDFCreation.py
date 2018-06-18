@@ -3,13 +3,16 @@ from reportlab.lib.pagesizes import letter, A4
 import datetime
 import math
 import ScheduleBar
+import Input
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
-def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek):
+def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
+    
+    c.setFont('Helvetica', int(s/3))
+    c.drawString(wid - int(wid/1.3), y_offset+450, "Monthly Schedule")
     
     on_number = 1
     box_y_range = int((monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1)))
-    
     event_in_box = [0 for i in range(monthDays[thisMonth])]
 
     for box_y in range(box_y_range):
@@ -85,12 +88,10 @@ def monthly_schedule(c):
         Y = Y - 1
     d = (math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) - (7 * math.floor((math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) / 7))
     
-    print(d)
-    
     x_offset = 25
     y_offset = 300
     
-    drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek)
+    drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, 306)
 
 def printTime(raw_time):   
     minutes = (raw_time + ScheduleBar.day_schedule_bar.start_time) - ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60)*60
@@ -108,8 +109,9 @@ def printTime(raw_time):
 def drawDailySchedule(c, sections, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
+    c.setFont('Helvetica', font_size*1.5)
+    c.drawString(wid - int(wid/1.3), y_offset+30, "Daily Schedule")
     c.setFont('Helvetica', font_size)
-    
     if len(sections) <= 10:
         for t in range(len(sections)):
             c.drawCentredString (wid, -t*20 + y_offset, sections[t])
@@ -123,7 +125,7 @@ def drawDailySchedule(c, sections, font_size, wid, y_offset):
                 else:
                     c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(sections)/2))*20 + y_offset, sections[t])
 
-def daily_schedule(c):
+def daily_schedule(c, other_schedule_shown):
     times = []
     for node in ScheduleBar.day_schedule_bar.nodes:
         times.append(node.time)
@@ -131,30 +133,49 @@ def daily_schedule(c):
     
     section_type = ScheduleBar.day_schedule_bar.types
     
+    section_type_user = []
+    for each_input in Input.inputs:
+        if each_input.id >= 30 and each_input.id < 200:
+            section_type_user.append(each_input.txt)
+    
     sections = []
     for activities in range(len(times)-1):
         print_text = ''
         proper_time_1 = printTime(int(times[activities]))
         proper_time_2 = printTime(int(times[activities+1]))
         activity_type = section_type[activities]
-        sections.append("{0} : {1} - {2}".format(proper_time_1,proper_time_2,activity_type))
+        
+        if section_type_user[activities] == "":
+            sections.append("{0} : {1} - {2}".format(proper_time_1,proper_time_2,activity_type))
+        else:
+            sections.append("{0} : {1} - {2}".format(proper_time_1,proper_time_2,section_type_user[activities]))
     
     font_size = 15
     wid = 306
-    y_offset = 225
     
-    drawDailySchedule(c, sections, font_size, wid, y_offset)
+    if len(sections) <= 20 and other_schedule_shown == True:
+        y_offset = 225
+        drawDailySchedule(c, sections, font_size, wid, y_offset)
+        return [False, None]
+    else:
+        if other_schedule_shown == True:
+            c.showPage()
+        y_offset = 700
+        drawDailySchedule(c, sections, font_size, wid, y_offset)
+        return [True, len(sections)]
 
 def drawMatches(c, teams, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
+    c.setStrokeColorRGB(0,0,0)
+    c.setFillColorRGB(0,0,0)
+    c.setFont('Helvetica', font_size*1.5)
+    c.drawString(wid - int(wid/1.3), y_offset+30, "Matches")
     c.setFont('Helvetica', font_size)
-    
-    #c.drawCentredString(int(wid/2), y_offset, "Daily Schedule")
     
     if len(teams) <= 10:
         for t in range(len(teams)):
-            c.drawCentredString (wid, -t*20 + y_offset, teams[t])
+            c.drawCentredString(wid, -t*20 + y_offset, teams[t])
     else:
         for t in range(len(teams)):
             if t <= int((len(teams)-1)/2):
@@ -165,13 +186,43 @@ def drawMatches(c, teams, font_size, wid, y_offset):
                 else:
                     c.drawCentredString(wid + int(wid/3), -((t-1)-int(len(teams)/2))*20 + y_offset, teams[t])
 
-def matches(c, width):
+def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
     font_size = 15
     wid = 306
-    teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
-    y_offset = 200
     
-    drawMatches(c, teams, font_size, wid, y_offset)
+    for each_input in Input.inputs:
+        if each_input.id < 30:
+             teams.append(each_input.txt)
+    
+    if len(teams) == 0:
+        team_number_input = None
+        for each_input in Input.inputs:
+            if each_input.id == 2000:
+                team_number_input = each_input
+                break
+        
+    if team_number_input.txt.isdigit() and team_number_input.txt != '':
+        MatchOrgAndSep(int(team_number_input.txt))
+    else:
+        MatchOrgAndSep(10)
+        #teams = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
+    
+    if daily_schedule_on_new_page[0] == True:
+        if daily_schedule_on_new_page[1] + len(teams) < 65:
+            y_offset = 600 - daily_schedule_on_new_page[1]*10
+            drawMatches(c, teams, font_size, wid, y_offset)
+        else:
+            c.showPage()
+            y_offset = 700
+            drawMatches(c, teams, font_size, wid, y_offset)
+    else:
+        if daily_schedule_on_new_page[1] != None or monthly_schedule_on:
+            c.showPage()
+            y_offset = 700
+            drawMatches(c, teams, font_size, wid, y_offset)
+        else:
+            y_offset = 700
+            drawMatches(c, teams, font_size, wid, y_offset)
     
 def createPDF():
     width, height = letter
@@ -179,10 +230,20 @@ def createPDF():
     pdfName = "SampleMatchSheet.pdf"
     
     c = canvas.Canvas(pdfName, pagesize=letter)
-    monthly_schedule(c)
-    #c.showPage()
-    daily_schedule(c)
-    #matches(c)
+    
+    monthly_schedule_on = True
+    daily_schedule_on = True
+    matches_on = True
+    
+    if monthly_schedule_on:
+        monthly_schedule(c)
+    if daily_schedule_on: 
+        daily_schedule_on_new_page = daily_schedule(c, monthly_schedule_on)
+    else:
+        daily_schedule_on_new_page = [None, None]
+    if matches_on:
+        matches(c, daily_schedule_on_new_page, monthly_schedule_on)
+            
     
     try:
         c.save()
