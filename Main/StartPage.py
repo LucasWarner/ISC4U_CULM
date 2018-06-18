@@ -1,9 +1,9 @@
 class StartPage(object):
     def __init__ (self,tx,ty,x,y,s,FS):
-        startPage = loadImage("Cover.jpeg")
+        start_page = loadImage("Cover.jpeg")
         yes = loadImage("CheckMark.png")
         no = loadImage("RedNo.png")
-        image(startPage,0,0,width,height)
+        image(start_page,0,0,width,height)
         if FS == "True":
             image(yes,x,y,s,s)
         else:

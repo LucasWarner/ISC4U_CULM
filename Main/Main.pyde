@@ -18,6 +18,7 @@ import Button
 import ScheduleBar
 import Input
 import PDFCreation
+import MonthlySchedule
 
 #PDFCreation.createPDF()
 
@@ -29,17 +30,17 @@ def settings():
         size(800,600)
         
 def setup():
-    global Start_Page, first_page, second_page, locked, a, b
+    global Start_Page, first_page, second_page, locked, team_num, node_num
     textFont(createFont("Helvetica", dim(18,'y')))
-    a=3
-    b=30
+    team_num=3
+    node_num=30
     #Set up opening page
     second_page = False
     first_page = True
     Start_Page = StartPage.StartPage(dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     locked = False
 def setup_2():
-    global over_plus_button, over_minus_button, first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, schedule, input, team, vertical_Scrollbar
+    global over_plus_button, over_minus_button, first_page, second_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, schedule, matches, monthly, input, team, vertical_Scrollbar, event_info,preview
     #Delete firstpage memory
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -50,14 +51,17 @@ def setup_2():
     third_drop_menu=True
     second_drop_menu=True
     first_drop_menu=True
-    team_menu=["Teams & Matches","Event Information"]
+    team_menu=["Teams & Matches","Match Options"]
     time_menu=["Daily Schedule","Monthly Schedule"]
-    match_menu=["Match Options","Preview"]
+    match_menu=["Event Information","Preview"]
     second_page = True
     schedule=False
     input=False
     team =False
     matches=False
+    preview=False
+    event_info=False
+    monthly=False
     ScheduleBar.Setup()
     vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     team_names()
@@ -67,11 +71,11 @@ def setup_2():
 def draw():
     #Updates
     if first_page == True:
-        update1()
+        update_1()
     else:
-        update2()
+        update_2()
         
-def update1():
+def update_1():
     global over_start_button, over_exit_button, over_full, Start_Button, Exit_Button
     #Clickables and button inits
     over_start_button = over_clickable(dim(500), dim(460, 'y'), dim(200), dim(60, 'y'))
@@ -105,7 +109,7 @@ def update1():
          "\nas well as other more personal events. \nWith an array of useful and hand-crafted"+
          "\nsettings, we have what you need.",dim(55), dim(300, 'y'))
 
-def update2():
+def update_2():
     global over_teams_button,over_scheduling_button,over_matchmaking_button,side_bar,clickable_list,Y,add_node, over_plus_button, over_minus_button
     #Refresh page and variables
     Main_Page.update()
@@ -113,7 +117,7 @@ def update2():
     side_bar=[]
     
     over_teams_button = over_clickable(0, dim(40, 'y'), dim(150), dim(30, 'y'))
-    side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Teams and Info",True,first_drop_menu))
+    side_bar.append(Button.Button(0, dim(40, 'y'), dim(150), dim(30, 'y'),0,"Matchmaking",True,first_drop_menu))
     Y=30
     if first_drop_menu==False:
         for opt in team_menu:
@@ -129,57 +133,69 @@ def update2():
             clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
             Y+=30
     over_matchmaking_button = over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'))
-    side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,"Matchmaking",True,third_drop_menu))
+    side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,"Info and Preview",True,third_drop_menu))
     Y+=30
     if third_drop_menu==False:
         for opt in match_menu:
             side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,str(opt),False,False,dim(14,'y')))
             clickable_list.append(over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y')))
             Y+=30
-    for elm in side_bar:
-        elm.display(0,0,0,255,0,0,0,0)
+    for item in side_bar:
+        item.display(0,0,0,255,0,0,0,0)
     if schedule:
         ScheduleBar.update()
         Schedule_Update()
-        daily_schedule()
         Input.update('daily')
     if input:
         Input.update('teams')
-        Team_Update()
+        team_update()
+    if event_info:
+        pass
+    if matches:
+        pass
+    if preview:
+        pass
+    if monthly:
+        MonthlySchedule.display()
         
-def team_names(s='1'):
+def team_names(s=''):
     if s=='a':
-        Input.inputs.append(Input.input(a-1,dim(350),dim(80+(30*(a-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+        Input.inputs.append(Input.input(team_num-1,dim(350),dim(80+(30*(team_num-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
         Input.inputs.pop()
     else:
-        for j in range(a):
+        for j in range(team_num):
             Input.inputs.append(Input.input(j,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+        Input.inputs.append(Input.input(2000,dim(550),dim(80-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(50),dim(18, 'y')))
             
 def daily_schedule(s=''):
     if s=='a':
-        Input.inputs.append(Input.input(b,dim(350),dim(220+(30*(b-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+        Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
         Input.inputs.pop()
     else:
         for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
             Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
-
             
-def Team_Update():
-    global a,over_add_button,over_remove_button,ScrollY,locked
+def team_update():
+    global team_num,over_add_button,over_remove_button,ScrollY,locked
+    for each_input in Input.inputs:
+        if each_input.id<30:
+            each_input.y = dim(80+(30*each_input.id)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')
+        elif each_input.id==2000:
+            each_input.y=dim(80-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')
     fill(255)
     text("Teams & Matches",dim(380),dim(50,'y') )
-    for j in range(a):
+    for j in range(team_num):
         if dim(80 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')>70 and dim(80 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')<750:
             text(str(j+1) + ". Name:",dim(240),dim(100 + (30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'))
-    if a<30:
+    if team_num<30:
         over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(140), dim(30, 'y'))
         add_button = Button.Button(dim(240), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(140), dim(30, 'y'),dim(400),"Add Team")
         add_button.display(0,0,0,255,0,0,0,0)
     else:
         over_add_button = False
-    if a>1:
+    if team_num>1:
         over_remove_button = over_clickable(dim(410), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(150), dim(30, 'y'))
         remove_button = Button.Button(dim(380), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(180), dim(30, 'y'),dim(400),"Remove Team")
         remove_button.display(0,0,0,255,0,0,0,0)
@@ -231,18 +247,21 @@ def Schedule_Update():
     
     over_plus_button = over_clickable(520, dim(30, 'y'), dim(35), dim(40, 'y'))
     over_minus_button = over_clickable(425, dim(30, 'y'), dim(35), dim(40, 'y'))
+    
+    for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
+        text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j),'y'))
 def mousePressed():
-    global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule,input,add_node,delete_node,a,b, over_plus_button, over_minus_button
+    global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule, input, monthly, preview, matches, event_info, add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button
     if second_page:
         i=0
         if schedule:
             if add_node:
                 ScheduleBar.addNode()
-                b+=1
+                node_num+=1
                 daily_schedule('a')
             if delete_node:
                 ScheduleBar.removeNode()
-                b-=1
+                node_num-=1
                 daily_schedule('p')
             if range_10:
                 ScheduleBar.rangeOption(1)
@@ -261,35 +280,35 @@ def mousePressed():
         if input:
             Input.mousepressed()
             if over_add_button:
-                a+=1
+                team_num+=1
                 team_names('a')
             if over_remove_button:
-                a-=1
+                team_num-=1
                 team_names('p')
         
         if first_drop_menu==False:
-            if clickable_list[i]==True:
-                #teams = not teams
+            if clickable_list[i]:
                 input = not input
-                schedule, team = (False,)*2
+                schedule, team, monthly, preview, matches, event_info = (False,)*6
+            if clickable_list[i+1]:
+                matches = not matches
+                schedule, team, monthly, input, preview, event_info = (False,)*6
             i+=2
         if second_drop_menu==False:
-            if clickable_list[i]==True:
+            if clickable_list[i]:
                 schedule = not schedule
-                input, team = (False,)*2
-                '''
-                if clickable_list[1]==True:
-                    monthly = not monthly
-                '''
+                input, team, event_info, preview, monthly, matches = (False,)*6
+            if clickable_list[i+1]:
+                monthly = not monthly
+                input, team, event_info, preview, schedule, matches = (False,)*6
             i+=2
         if third_drop_menu==False:
-            if clickable_list[i]==True:
-                #schedule = not schedule
-                input, team, scedule = (False,)*3
-                '''
-                if clickable_list[1]==True:
-                    monthly = not monthly
-                '''
+            if clickable_list[i]:
+                event_info = not event_info
+                input, team, schedule, preview, monthly, matches = (False,)*6
+            if clickable_list[i+1]:
+                preview = not preview
+                input, team, schedule, event_info, monthly, matches = (False,)*6
         if over_teams_button:
             first_drop_menu= not first_drop_menu
         if over_scheduling_button:

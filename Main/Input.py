@@ -45,12 +45,13 @@ def update(string):
     over_input = False
     for each_input in inputs:
         if each_input.y>70 and each_input.y<750:
-            if each_input.id < 30 and string == 'teams':
-                each_input.draw_input()
-                
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
-                    cursor(TEXT)
-                    over_input = True
+            if string == 'teams':
+                if each_input.id < 30 or each_input.id==2000:
+                    each_input.draw_input()
+                    
+                    if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                        cursor(TEXT)
+                        over_input = True
             if each_input.id < 40 and each_input.id >= 30 and string == 'daily':
                 each_input.draw_input()
                 
@@ -194,7 +195,7 @@ def mousepressed():
         for other_inputs in inputs:
             other_inputs.activated = False
         
-
+    print(activated_input)
 #Check for mouseovers
 def over_clickable(x, y, width, height): 
     return x <= mouseX <= x + width and y <= mouseY <= y + height

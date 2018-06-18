@@ -1,11 +1,9 @@
 import datetime
 
-s = 50
+s = 78
 rows = 5
 collumns = 7
 
-x_offset = 30
-y_offset = 30
 topPadding = 50
 
 thisMonth = 2
@@ -29,14 +27,14 @@ d = (floor(2.6 * M - 5.39) + floor((Y - (100 * (floor(Y / 100)))) / 4) + floor((
 
 def display():
     global x_offset, y_offset, d, events, repeating_events
-    x_offset = width/30
-    y_offset = width/30
+    x_offset = 202
+    y_offset = 200
     
     on_number = 1
     box_y_range = (monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1))
     event_in_box = [0 for i in range(monthDays[thisMonth])]
     fill(255)
-    rect(x_offset,0,7*s + x_offset,box_y_range*s + y_offset)
+    rect(x_offset,y_offset,7*s,box_y_range*s)
     for box_y in range(box_y_range):
         for box_x in range(7):
             if box_y == 0:
