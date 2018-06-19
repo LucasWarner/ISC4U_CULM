@@ -58,6 +58,12 @@ def setup_2():
     time_menu = ["Daily Schedule","Monthly Schedule"]
     match_menu = ["Event Information","Publish"]
     
+    vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
+    locked = False
+    team_num = 3
+    team = False
+    team_setup()
+    
     matches = False
     matches_setup()
     
@@ -69,12 +75,6 @@ def setup_2():
 
     monthly = False
     monthly_setup()
-    
-    vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
-    locked = False
-    team_num = 3
-    team = False
-    team_setup()
     
     daily=False
     node_num = 30
@@ -204,19 +204,16 @@ def update_2():
         MonthlySchedule.display()
         
 def matches_setup():
-    
     for j in range(2):
-            Input.inputs.append(Input.input(j+300,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+300,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
 def event_setup():
-    
     for j in range(2):
-            Input.inputs.append(Input.input(j+302,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+302,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
         
 def monthly_setup():
-    
     for j in range(2):
-            Input.inputs.append(Input.input(j+304,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+304,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     #checkbox id stuff
     
 def publish_setup():
@@ -224,7 +221,6 @@ def publish_setup():
     pass
     
 def team_setup(s=''):
-    
     if s=='a':
         Input.inputs.append(Input.input(team_num-1,dim(350),dim(80+(30*(team_num-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
@@ -236,7 +232,6 @@ def team_setup(s=''):
         Input.inputs.append(Input.input(2000,dim(550),dim(80-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(50),dim(18, 'y')))
             
 def daily_setup(s=''):
-    
     if s=='a':
         Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
@@ -247,19 +242,15 @@ def daily_setup(s=''):
             Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
          
 def matches_update():
-    
     pass
     
 def event_update():
-    
     pass
         
 def monthly_update():
-    
     pass
     
 def publish_update():
-    
     pass
     
 def team_update():
@@ -457,12 +448,10 @@ def mousePressed():
             setup()
             
 def mouseReleased():
-    
     if daily:
         ScheduleBar.mousereleased()
         
 def keyPressed():
-    
     if first_page == False:
         Input.keypressed()
           
@@ -471,20 +460,19 @@ def over_clickable(x, y, w, h):
     return x <= mouseX <= x + w and y <= mouseY <= y + h
 
 def dim(y, m = 'X'): 
-    
     if m == 'X':
         return width*y/800
     else:
         return height*y/600
     
 def full_bol():
-        global FullScreen
+    global FullScreen
         
-        Settings = open("settings.txt","r")
-        for Line in Settings:
-            FullScreen = str(Line[12:])
-        Settings.close()
-        return FullScreen
+    Settings = open("settings.txt","r")
+    for Line in Settings:
+        FullScreen = str(Line[12:])
+    Settings.close()
+    return FullScreen
 
 class Scrollbar(object): # scroll bar class
     def __init__ (self,xp, yp, sw, sh, l):
