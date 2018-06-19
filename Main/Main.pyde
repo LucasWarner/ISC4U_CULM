@@ -150,12 +150,19 @@ def update_2():
         Input.update('teams')
         team_update()
     if event_info:
+        #event title
+        #brief description of event
         pass
     if matches:
+        #numberOfGamesPerTeam
+        #playAgainstOtherTeamMaxTimes
+        #numberOfTeamsTotal
         pass
     if preview:
         pass
     if monthly:
+        #repeatingEvent
+        #events
         MonthlySchedule.display()
         
 def team_names(s=''):
@@ -179,6 +186,8 @@ def daily_schedule(s=''):
             
 def team_update():
     global team_num,over_add_button,over_remove_button,ScrollY,locked
+    if team_num==3:
+        text("If you would not like to display the team names in the \npdf just enter in the number of teams you would like in \nthe top right box",dim(250),dim(400,'y'))
     for each_input in Input.inputs:
         if each_input.id<30:
             each_input.y = dim(80+(30*each_input.id)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y')
@@ -283,8 +292,9 @@ def mousePressed():
                 team_num+=1
                 team_names('a')
             if over_remove_button:
-                team_num-=1
-                team_names('p')
+                if team_num>3:
+                    team_num-=1
+                    team_names('p')
         
         if first_drop_menu==False:
             if clickable_list[i]:

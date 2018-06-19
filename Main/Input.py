@@ -195,7 +195,6 @@ def mousepressed():
         for other_inputs in inputs:
             other_inputs.activated = False
         
-    print(activated_input)
 #Check for mouseovers
 def over_clickable(x, y, width, height): 
     return x <= mouseX <= x + width and y <= mouseY <= y + height
