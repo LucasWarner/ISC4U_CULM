@@ -25,6 +25,14 @@ if M < 3:
 d = (floor(2.6 * M - 5.39) + floor((Y - (100 * (floor(Y / 100)))) / 4) + floor((floor(Y / 100)) / 4) + D + (Y - (100 * (floor(Y / 100)))) - (2 * (floor(Y / 100)))) - (7 * floor((floor(2.6 * M - 5.39) + floor((Y - (100 * (floor(Y / 100)))) / 4) + floor((floor(Y / 100)) / 4) + D + (Y - (100 * (floor(Y / 100)))) - (2 * (floor(Y / 100)))) / 7))
 
 
+def addEvent(is_weekly, name, date):
+    global events, repeatingEvent
+    
+    if is_weekly:
+        repeatingEvent.append([name, int(date)])
+    else:
+        events.append([name, int(date)])
+
 def display():
     global x_offset, y_offset, d, events, repeating_events
     x_offset = 202
