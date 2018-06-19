@@ -19,6 +19,7 @@ import ScheduleBar
 import Input
 import PDFCreation
 import MonthlySchedule
+import CheckBox
 
 #PDFCreation.createPDF()
 
@@ -204,6 +205,7 @@ def update_2():
         MonthlySchedule.display()
         
 def matches_setup():
+    CheckBox.checkboxes.append(CheckBox.Checkbox(1,dim(400),dim(100,'y')))
     for j in range(2):
             Input.inputs.append(Input.input(j+300,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
@@ -242,13 +244,19 @@ def daily_setup(s=''):
             Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
          
 def matches_update():
-    pass
+    for boxes in CheckBox.checkboxes:
+        if boxes.id==1:
+            boxes.render()
+            print(boxes.clicked)
     
 def event_update():
     pass
         
 def monthly_update():
-    pass
+    global submit_event, submit_event_over
+    submit_event_over = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
+    submit_event = Button.Button(dim(475), dim(95, 'y'), dim(180), dim(30, 'y'),dim(400),"Submit Event")
+    submit_event.display(0,0,0,255,0,0,0,0)
     
 def publish_update():
     pass
@@ -382,16 +390,28 @@ def mousePressed():
                     team_setup('p')
                     
         if publish:
-            pass
+            Input.mousepressed()
             
         if event_info:
-            pass
+            Input.mousepressed()
             
         if matches:
-            pass
+            Input.mousepressed()
+            CheckBox.mousepressed(1)
             
         if monthly:
-            pass
+            Input.mousepressed()
+            if submit_event_over:
+                for checkbox in checkboxes:
+                    if checkbox.id == 0:
+                        for each_input in Input.inputs:
+                            if each_input.id == 303:
+                                event_name = each_input.txt
+                            elif each_input.id == 304:
+                                event_date = each_input.txt
+                        
+                        if event_name != "" and event_date != "" and event_date.isnumeric():
+                            MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
             
             
         if first_drop_menu==False:
