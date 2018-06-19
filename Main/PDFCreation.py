@@ -206,6 +206,8 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
         
         if team_number_input.txt.isdigit() and team_number_input.txt != '':
             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))])
+        else:
+             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))])
     else:
         matches = MatchOrgAndSep.MatchMake([i for i in teams])
     

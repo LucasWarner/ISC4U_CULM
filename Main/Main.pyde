@@ -209,11 +209,11 @@ def matches_setup():
     
 def event_setup():
     for j in range(2):
-            Input.inputs.append(Input.input(j+302,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+301,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
         
 def monthly_setup():
     for j in range(2):
-            Input.inputs.append(Input.input(j+304,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+303,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     #checkbox id stuff
     
 def publish_setup():

@@ -52,6 +52,28 @@ def update(string):
                     if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                         cursor(TEXT)
                         over_input = True
+                        
+            if each_input.id ==302 and string == 'event':
+                each_input.draw_input()
+                
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
+                    
+            if each_input.id <=304 and each_input.id >= 303 and string == 'monthly':
+                each_input.draw_input()
+                
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
+                    
+            if each_input.id <= 301 and each_input.id >= 300 and string == 'match':
+                each_input.draw_input()
+                
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
+                    
             if each_input.id < 40 and each_input.id >= 30 and string == 'daily':
                 each_input.draw_input()
                 
