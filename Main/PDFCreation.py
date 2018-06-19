@@ -206,12 +206,8 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
         
         if team_number_input.txt.isdigit() and team_number_input.txt != '':
             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))])
-        
-        
-        #matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(10)])
-    #else:
-    
-    #matches = ['Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6', 'Team 4 vs Team 8', 'Team 1 vs Team 5', 'Team 2 vs Team 4', 'Team 3 vs Team 6']
+    else:
+        matches = MatchOrgAndSep.MatchMake([i for i in teams])
     
     if daily_schedule_on_new_page[0] == True:
         if daily_schedule_on_new_page[1] + len(matches) < 65:

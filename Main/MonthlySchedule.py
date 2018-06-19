@@ -43,7 +43,7 @@ def display():
                 text(daysOfTheWeek[box_x], box_x*s + x_offset + s/15, y_offset - s/10)
             line(box_x*s + x_offset, box_y*s + y_offset, (box_x+1)*s + x_offset, box_y*s + y_offset)
             line(box_x*s + x_offset, box_y*s + y_offset, box_x*s + x_offset, (box_y+1)*s + y_offset)
-            if 7*box_y + (box_x+1) > d and on_numb er <= monthDays[thisMonth]:
+            if 7*box_y + (box_x+1) > d and on_number <= monthDays[thisMonth]:
                 #Print day number
                 fill(0)
                 textSize(s/6)

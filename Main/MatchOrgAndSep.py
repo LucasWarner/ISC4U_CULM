@@ -33,7 +33,7 @@ def MatchMake(teamsNamed):
     #games[2] = filler matches indices (match with right side teams (games[1])
 
     #Filler matches teams/issues
-    if len(games[0]) + len(games[2]) < int((numberOfTeamsTotal*numberOfGamesPerTeam)/2):
+    """if len(games[0]) + len(games[2]) < int((numberOfTeamsTotal*numberOfGamesPerTeam)/2):
         if len(games[0]) == numberOfTeamsTotal*numberOfGamesPerTeam + len(games[2]):
             s = "\nFiller teams: "
             for i in games[2]:
@@ -42,7 +42,7 @@ def MatchMake(teamsNamed):
         else:
             print("No filler games possible to balance playing time")
             print("Games Achieved: " + str(len(games[0]) + len(games[2])))
-            print("Games Needed: " + str(int((numberOfTeamsTotal*numberOfGamesPerTeam)/2)))
+            print("Games Needed: " + str(int((numberOfTeamsTotal*numberOfGamesPerTeam)/2)))"""
     trueMatchIndices = [i for i in range(len(games[0]))]
 
     changing = True
