@@ -11,8 +11,6 @@ def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
     #teamsNamed - List of team names
     #numberOfGamesPerTeam - Number of games each team needs to play
     #playAgainstOtherTeamMaxTimes - Number of times teams can play one another
-    print(numberOfGamesPerTeam)
-    print(playAgainstOtherTeamMaxTimes)
     
     #Total number of teams
     numberOfTeamsTotal = len(teamsNamed)

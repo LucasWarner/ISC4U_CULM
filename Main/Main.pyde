@@ -38,7 +38,7 @@ def setup():
     Start_Page = StartPage.StartPage(dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     
 def setup_2():
-    global over_plus_button, over_minus_button, first_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, daily, matches, monthly, team, vertical_Scrollbar, event_info, publish, team_num, node_num, locked
+    global over_plus_button, over_minus_button, first_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, daily, matches, monthly, team, vertical_Scrollbar, publish, team_num, node_num, locked
     
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -55,7 +55,7 @@ def setup_2():
     
     team_menu = ["Teams & Matches","Match Options"]
     time_menu = ["Daily Schedule","Monthly Schedule"]
-    match_menu = ["Event Information","Publish"]
+    match_menu = ["Publish"]
     
     vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     locked = False
@@ -68,9 +68,6 @@ def setup_2():
     
     publish = False
     publish_setup()
-    
-    event_info = False
-    event_setup()
 
     monthly = False
     monthly_setup()
@@ -170,14 +167,6 @@ def update_2():
         Input.update('teams')
         team_update()
         
-    if event_info:
-        #event title
-        #brief description of event
-        #two text boxes
-        #possibily add more
-        Input.update('event')
-        event_update()
-        
     if matches:
         #numberOfGamesPerTeam
         #playAgainstOtherTeamMaxTimes
@@ -190,6 +179,7 @@ def update_2():
         #button to save pdf(to desktop?)
         #check boxes for what to include
         publish_update()
+        Input.update('event')
         
     if monthly:
         #repeatingEvent
@@ -207,9 +197,6 @@ def matches_setup():
     for j in range(2):
             Input.inputs.append(Input.input(j+300,dim(550),dim(300+(100*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
-def event_setup():
-    Input.inputs.append(Input.input(302,dim(350),dim(80,'y'),dim(25,'y'),dim(150),dim(18, 'y')))
-        
 def monthly_setup():
     CheckBox.checkboxes.append(CheckBox.Checkbox(0,dim(220),dim(100,'y')))
     for j in range(2):
@@ -219,9 +206,10 @@ def monthly_setup():
 def publish_setup():
     global export
     export = Button.Button(dim(575), dim(495, 'y'), dim(180), dim(30, 'y'),dim(400),"Export")
-    CheckBox.checkboxes.append(CheckBox.Checkbox(3,dim(600),dim(200,'y')))
-    CheckBox.checkboxes.append(CheckBox.Checkbox(4,dim(600),dim(300,'y')))
-    CheckBox.checkboxes.append(CheckBox.Checkbox(2,dim(600),dim(400,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(3,dim(600),dim(210,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(4,dim(600),dim(310,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(2,dim(600),dim(410,'y')))
+    Input.inputs.append(Input.input(302,dim(450),dim(80,'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
 def team_setup(s=''):
     if s=='a':
@@ -257,9 +245,6 @@ def matches_update():
     text("Number of Games Each",dim(300),dim(318,'y'))
     text("Max Times One Team \nCan Play Another",dim(300),dim(418,'y'))
     
-def event_update():
-    pass
-        
 def monthly_update():
     global submit_event, submit_event_over
     for boxes in CheckBox.checkboxes:
@@ -275,13 +260,12 @@ def publish_update():
         if boxes.id>=2 and boxes.id<=4:
             boxes.render()
     
-    over_export = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
-    print(over_export)
+    over_export = over_clickable(dim(600), dim(490, 'y'), dim(80), dim(30, 'y'))
     export.display(0,0,0,255,0,0,0,0)
-    text("Check on the feature checkboxes to \ninclude them in the PDF",dim(300),dim(100,'y'))
-    text("Matchmaking",dim(400),dim(218,'y'))
-    text("Daily Schedule",dim(400),dim(318,'y'))
-    text("Monthly Schedule",dim(400),dim(418,'y'))
+    text("Check on the feature checkboxes to \ninclude them in the PDF",dim(300),dim(145,'y'))
+    text("Matchmaking",dim(400),dim(228,'y'))
+    text("Daily Schedule",dim(400),dim(328,'y'))
+    text("Monthly Schedule",dim(400),dim(428,'y'))
     
     
 def team_update():
@@ -373,7 +357,7 @@ def Schedule_Update():
         text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j),'y'))
         
 def mousePressed():
-    global first_page,first_drop_menu,second_drop_menu, third_drop_menu, daily, team, monthly, publish, matches, event_info, add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button, over_export
+    global first_page,first_drop_menu,second_drop_menu, third_drop_menu, daily, team, monthly, publish, matches,  add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button, over_export
     
     if first_page == False:
         i=0
@@ -413,7 +397,7 @@ def mousePressed():
                     team_setup('p')
                     
         if publish:
-            Input.mousepressed('a')
+            Input.mousepressed('event')
             CheckBox.mousepressed(2)
             CheckBox.mousepressed(3)
             CheckBox.mousepressed(4)
@@ -421,10 +405,7 @@ def mousePressed():
             if over_export:
                 print("Happened")
                 PDFCreation.createPDF()
-            
-        if event_info:
-            Input.mousepressed('event')
-            
+
         if matches:
             Input.mousepressed('matches')
             CheckBox.mousepressed(1)
@@ -456,28 +437,25 @@ def mousePressed():
         if first_drop_menu==False:
             if clickable_list[i]:
                 team = not team
-                daily, monthly, publish, matches, event_info = (False,)*5
+                daily, monthly, publish, matches = (False,)*4
             if clickable_list[i+1]:
                 matches = not matches
-                daily, team, monthly, publish, event_info = (False,)*5
+                daily, team, monthly, publish = (False,)*4
             i+=2
             
         if second_drop_menu==False:
             if clickable_list[i]:
                 daily = not daily
-                team, event_info, publish, monthly, matches = (False,)*5
+                team, publish, monthly, matches = (False,)*4
             if clickable_list[i+1]:
                 monthly = not monthly
-                team, event_info, publish, daily, matches = (False,)*5
+                team, publish, daily, matches = (False,)*4
             i+=2
             
         if third_drop_menu==False:
             if clickable_list[i]:
-                event_info = not event_info
-                team, daily, publish, monthly, matches = (False,)*5
-            if clickable_list[i+1]:
                 publish = not publish
-                team, daily, event_info, monthly, matches = (False,)*5
+                team, daily, monthly, matches = (False,)*4
                 
                 
         if over_teams_button:

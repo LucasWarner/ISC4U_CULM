@@ -42,11 +42,6 @@ class input(object):
 def update(update_section):
     global inputs
     
-    p = []
-    for i in inputs:
-        p.append([i.txt, i.id])
-    #print(p)
-    
     over_input = False
     allowed_inputs = []
     for each_input in inputs:
@@ -182,7 +177,6 @@ def mousepressed(mousepressed_section):
             allowed_inputs.append(each_input)
                     
         if each_input.id <=304 and each_input.id >= 303 and mousepressed_section == 'monthly':
-            print("x")
             allowed_inputs.append(each_input)
                 
         if each_input.id <= 301 and each_input.id >= 300 and mousepressed_section == 'matches':
