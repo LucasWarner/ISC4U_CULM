@@ -60,19 +60,15 @@ def setup_2():
     
     matches = False
     matches_setup()
-    matches_update()
     
     publish = False
     publish_setup()
-    publish_update()
     
     event_info = False
     event_setup()
-    event_update()
 
     monthly = False
     monthly_setup()
-    monthly_update()
     
     vertical_Scrollbar = Scrollbar(dim(750), dim(25, 'y'), 16, height-65, 2)
     locked = False
@@ -178,36 +174,53 @@ def update_2():
     if event_info:
         #event title
         #brief description of event
-        pass
+        #two text boxes
+        #possibily add more
+        Input.update('event')
+        event_update()
         
     if matches:
         #numberOfGamesPerTeam
         #playAgainstOtherTeamMaxTimes
         #numberOfTeamsTotal
-        pass
+        #two text boxes
+        Input.update('matches')
+        matches_update()
         
     if publish:
-        pass
+        #button to save pdf(to desktop?)
+        #check boxes for what to include
+        publish_update()
         
     if monthly:
         #repeatingEvent
         #events
+        #checkbox option
+        #event name and date
+        #[date,name]
+        #two textboxes
+        Input.update('monthly')
+        monthly_update()
         MonthlySchedule.display()
         
 def matches_setup():
     
-    pass
+    for j in range(2):
+            Input.inputs.append(Input.input(j+300,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
 def event_setup():
     
-    pass
+    for j in range(2):
+            Input.inputs.append(Input.input(j+302,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
         
 def monthly_setup():
     
-    pass
+    for j in range(2):
+            Input.inputs.append(Input.input(j+304,dim(350),dim(80+(30*j)-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+    #checkbox id stuff
     
 def publish_setup():
-    
+    #checkbox id stuff
     pass
     
 def team_setup(s=''):
