@@ -39,13 +39,18 @@ class input(object):
 
 
 #Update button appearencs/check for button mouseovers
-def update(string):
+def update(update_section):
     global inputs
+    
+    p = []
+    for i in inputs:
+        p.append([i.txt, i.id])
+    print(p)
     
     over_input = False
     for each_input in inputs:
         if each_input.y>70 and each_input.y<750:
-            if string == 'teams':
+            if update_section == 'teams':
                 if each_input.id < 30 or each_input.id==2000:
                     each_input.draw_input()
                     
@@ -53,28 +58,28 @@ def update(string):
                         cursor(TEXT)
                         over_input = True
                         
-            if each_input.id == 302 and string == 'event':
+            if each_input.id == 302 and update_section == 'event':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id <=304 and each_input.id >= 303 and string == 'monthly':
+            if each_input.id <=304 and each_input.id >= 303 and update_section == 'monthly':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id <= 301 and each_input.id >= 300 and string == 'matches':
+            if each_input.id <= 301 and each_input.id >= 300 and update_section == 'matches':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id < 40 and each_input.id >= 30 and string == 'daily':
+            if each_input.id < 40 and each_input.id >= 30 and update_section == 'daily':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
@@ -162,16 +167,31 @@ def keypressed():
             activated_input.edit_position += 1
         
 #Check for button click
-def mousepressed():
+def mousepressed(mousepressed_section):
     global inputs
     
-    activated_input = None
+    allowed_inputs = []
     for each_input in inputs:
+        if each_input.id == 302 and mousepressed_section == 'event':
+            allowed_inputs.append(each_input)
+                    
+        if each_input.id <=304 and each_input.id >= 303 and mousepressed_section == 'monthly':
+             allowed_inputs.append(each_input)
+             print("Happened")
+                
+        if each_input.id <= 301 and each_input.id >= 300 and mousepressed_section == 'matches':
+             allowed_inputs.append(each_input)
+                
+        if each_input.id < 40 and each_input.id >= 30 and mousepressed_section == 'daily':
+             allowed_inputs.append(each_input)
+    
+    activated_input = None
+    for each_input in allowed_inputs:
         if each_input.activated == True:
             activated_input = each_input.id
     
     input_clicked = None
-    for each_input in inputs:
+    for each_input in allowed_inputs:
         if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
             input_clicked = each_input.id
             
@@ -209,12 +229,12 @@ def mousepressed():
                     else:
                         each_input.edit_position = len(each_input.txt_show)
 
-    for each_input in inputs:
+    for each_input in allowed_inputs:
         if each_input.id != input_clicked:
             each_input.activated = False    
     
     if input_clicked == None:
-        for other_inputs in inputs:
+        for other_inputs in allowed_inputs:
             other_inputs.activated = False
         
 #Check for mouseovers

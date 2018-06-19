@@ -252,7 +252,7 @@ def matches_update():
             boxes.render()
     fill(255)
     text("ddddddddddd",dim(300),dim(100,'y'))
-    text("Fillers?",dim(300),dim(218,'y'))
+    text("Include Fillers",dim(300),dim(218,'y'))
     text("Number of Games Each \nTeam Plays",dim(300),dim(318,'y'))
     text("Play Against Other Teams \nMax Times",dim(300),dim(418,'y'))
     
@@ -396,10 +396,10 @@ def mousePressed():
                 ScheduleBar.changeEndNodeTime(-1)
             
             ScheduleBar.mousepressed()
-            Input.mousepressed()
+            Input.mousepressed('daily')
             
         if team:
-            Input.mousepressed()
+            Input.mousepressed('matches')
             if over_add_button:
                 team_num+=1
                 team_setup('a')
@@ -409,20 +409,20 @@ def mousePressed():
                     team_setup('p')
                     
         if publish:
-            Input.mousepressed()
+            Input.mousepressed('a')
             CheckBox.mousepressed(2)
             CheckBox.mousepressed(3)
             CheckBox.mousepressed(4)
             
         if event_info:
-            Input.mousepressed()
+            Input.mousepressed('event')
             
         if matches:
-            Input.mousepressed()
+            Input.mousepressed('matches')
             CheckBox.mousepressed(1)
             
         if monthly:
-            Input.mousepressed()
+            Input.mousepressed('montly')
             if submit_event_over:
                 for checkbox in checkboxes:
                     if checkbox.id == 0:
