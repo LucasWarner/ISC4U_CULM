@@ -6,31 +6,24 @@ Filler team options:
 
 """
 
-"""
-Randomize button to run it again with the same settings? But with random.shuffle, it won't be the same?
-"""
-y=0
 import random
-def MatchMake(teamsNamed):
-    random.shuffle(teamsNamed)
+def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
+    #teamsNamed - List of team names
+    #numberOfGamesPerTeam - Number of games each team needs to play
+    #playAgainstOtherTeamMaxTimes - Number of times teams can play one another
+    print(numberOfGamesPerTeam)
+    print(playAgainstOtherTeamMaxTimes)
+    
     #Total number of teams
-    if len(teamsNamed) != 0:
-        numberOfTeamsTotal = len(teamsNamed)
-    else:
-        numberOfTeamsTotal = 10
+    numberOfTeamsTotal = len(teamsNamed)
 
-    #Number of games each team needs to play
-    numberOfGamesPerTeam = 3
-
-    #Number of times teams can play one another
-    playAgainstOtherTeamMaxTimes = 1
-
-    separationIterations = 5
+    #Randomize team order to get different match results each time
+    random.shuffle(teamsNamed)
 
     games = getMatches(numberOfTeamsTotal, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes)
-    #games[0] = left side teams of matches
-    #games[1] = right side teams of matches
-    #games[2] = filler matches indices (match with right side teams (games[1])
+    #games[0] - left side teams of matches
+    #games[1] - right side teams of matches
+    #games[2] - filler matches indices (match with right side teams (games[1])
 
     #Filler matches teams/issues
     """if len(games[0]) + len(games[2]) < int((numberOfTeamsTotal*numberOfGamesPerTeam)/2):
@@ -189,9 +182,9 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
     if filler == True:
         fillerNeeded = []
         #Select teams that need filler matches
-        for y in range(len(teamsPlayed)):
-            if teamsPlayed[y] != numberOfGamesEach:
-                fillerNeeded.append(y)
+        for team_select in range(len(teamsPlayed)):
+            if teamsPlayed[team_select] != numberOfGamesEach:
+                fillerNeeded.append(team_select)
 
         #Iterate through teams that need filler
         for i in fillerNeeded:

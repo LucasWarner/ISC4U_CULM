@@ -6,6 +6,7 @@ import ScheduleBar
 import Input
 import MatchOrgAndSep
 import MonthlySchedule
+import CheckBox
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
 def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
@@ -197,7 +198,16 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
     for each_input in Input.inputs:
         if each_input.id < 30:
              teams.append(each_input.txt)
-
+        if each_input.id == 300:
+            games_each = each_input.txt
+        if each_input.id == 301:
+            play_other_max = each_input.txt
+    
+    if games_each.isnumeric() == False:
+        games_each = 3
+    if play_other_max.isnumeric() == False:
+        play_other_max = 1
+    
     if teams.count('') == len(teams):
         team_number_input = None
         for each_input in Input.inputs:
@@ -206,11 +216,11 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
                 break
         
         if team_number_input.txt.isdigit() and team_number_input.txt != '':
-            matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))])
+            matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))], games_each, play_other_max)
         else:
-             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))])
+             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))], games_each, play_other_max)
     else:
-        matches = MatchOrgAndSep.MatchMake([i for i in teams])
+        matches = MatchOrgAndSep.MatchMake([i for i in teams], games_each, play_other_max)
     
     if daily_schedule_on_new_page[0] == True:
         if daily_schedule_on_new_page[1] + len(matches) < 65:
@@ -236,9 +246,9 @@ def createPDF():
     
     c = canvas.Canvas(pdfName, pagesize=letter)
     
-    monthly_schedule_on = True
-    daily_schedule_on = True
-    matches_on = True
+    monthly_schedule_on = CheckBox.checkboxes[3].clicked
+    daily_schedule_on = CheckBox.checkboxes[2].clicked
+    matches_on = CheckBox.checkboxes[1].clicked
     
     if monthly_schedule_on:
         monthly_schedule(c)

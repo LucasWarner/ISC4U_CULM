@@ -21,8 +21,6 @@ import PDFCreation
 import MonthlySchedule
 import CheckBox
 
-#PDFCreation.createPDF()
-
 def settings():
     #set fullscreen or (800,600)
     if full_bol() == "True":
@@ -256,8 +254,8 @@ def matches_update():
     fill(255)
     text("ddddddddddd",dim(300),dim(100,'y'))
     text("Include Fillers",dim(300),dim(218,'y'))
-    text("Number of Games Each \nTeam Plays",dim(300),dim(318,'y'))
-    text("Play Against Other Teams \nMax Times",dim(300),dim(418,'y'))
+    text("Number of Games Each",dim(300),dim(318,'y'))
+    text("Max Times One Team \nCan Play Another",dim(300),dim(418,'y'))
     
 def event_update():
     pass
@@ -272,12 +270,15 @@ def monthly_update():
     submit_event.display(0,0,0,255,0,0,0,0)
     
 def publish_update():
+    global over_export
     for boxes in CheckBox.checkboxes:
         if boxes.id>=2 and boxes.id<=4:
             boxes.render()
-    export_over = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
+    
+    over_export = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
+    print(over_export)
     export.display(0,0,0,255,0,0,0,0)
-    text("This is your final step, \ncheck the boxes to include it in the pdf.",dim(300),dim(100,'y'))
+    text("Check on the feature checkboxes to \ninclude them in the PDF",dim(300),dim(100,'y'))
     text("Matchmaking",dim(400),dim(218,'y'))
     text("Daily Schedule",dim(400),dim(318,'y'))
     text("Monthly Schedule",dim(400),dim(418,'y'))
@@ -372,7 +373,7 @@ def Schedule_Update():
         text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j),'y'))
         
 def mousePressed():
-    global first_page,first_drop_menu,second_drop_menu, third_drop_menu, daily, team, monthly, publish, matches, event_info, add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button
+    global first_page,first_drop_menu,second_drop_menu, third_drop_menu, daily, team, monthly, publish, matches, event_info, add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button, over_export
     
     if first_page == False:
         i=0
@@ -395,7 +396,6 @@ def mousePressed():
                 ScheduleBar.rangeOption(3)
             if over_plus_button:
                 ScheduleBar.changeEndNodeTime(1)
-                PDFCreation.createPDF()
             if over_minus_button:
                 ScheduleBar.changeEndNodeTime(-1)
             
@@ -418,6 +418,10 @@ def mousePressed():
             CheckBox.mousepressed(3)
             CheckBox.mousepressed(4)
             
+            if over_export:
+                print("Happened")
+                PDFCreation.createPDF()
+            
         if event_info:
             Input.mousepressed('event')
             
@@ -433,19 +437,19 @@ def mousePressed():
                     if checkbox.id == 0:
                         for each_input in Input.inputs:
                             if each_input.id == 303:
-                                event_name = each_input.txt
+                                event_name = each_input
                             elif each_input.id == 304:
-                                event_date = each_input.txt
+                                event_date = each_input
                         
-                        if event_name != "" and event_date != "" and event_date.isnumeric():
+                        if event_name.txt != "" and event_date.txt != "" and event_date.txt.isnumeric():
                             if checkbox.clicked:
-                                if int(event_date) <= 7:
-                                    MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
+                                if int(event_date.txt) <= 7:
+                                    MonthlySchedule.addEvent(checkbox.clicked, event_name.txt, event_date.txt)
                                     event_name.txt = ""
                                     event_date.txt = ""
                                     
                             else:
-                                MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
+                                MonthlySchedule.addEvent(checkbox.clicked, event_name.txt, event_date.txt)
                                 event_name.txt = ""
                                 event_date.txt = ""
             
