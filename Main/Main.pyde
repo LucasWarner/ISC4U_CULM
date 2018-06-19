@@ -205,22 +205,25 @@ def update_2():
         MonthlySchedule.display()
         
 def matches_setup():
-    CheckBox.checkboxes.append(CheckBox.Checkbox(1,dim(400),dim(100,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(1,dim(600),dim(200,'y')))
     for j in range(2):
-            Input.inputs.append(Input.input(j+300,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+300,dim(550),dim(300+(100*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
 def event_setup():
-    for j in range(2):
-            Input.inputs.append(Input.input(j+301,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+    Input.inputs.append(Input.input(302,dim(350),dim(80,'y'),dim(25,'y'),dim(150),dim(18, 'y')))
         
 def monthly_setup():
+    CheckBox.checkboxes.append(CheckBox.Checkbox(0,dim(220),dim(100,'y')))
     for j in range(2):
             Input.inputs.append(Input.input(j+303,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     #checkbox id stuff
     
 def publish_setup():
-    #checkbox id stuff
-    pass
+    global export
+    export = Button.Button(dim(575), dim(495, 'y'), dim(180), dim(30, 'y'),dim(400),"Export")
+    CheckBox.checkboxes.append(CheckBox.Checkbox(3,dim(600),dim(200,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(4,dim(600),dim(300,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(2,dim(600),dim(400,'y')))
     
 def team_setup(s=''):
     if s=='a':
@@ -247,19 +250,35 @@ def matches_update():
     for boxes in CheckBox.checkboxes:
         if boxes.id==1:
             boxes.render()
-            print(boxes.clicked)
+    fill(255)
+    text("ddddddddddd",dim(300),dim(100,'y'))
+    text("Fillers?",dim(300),dim(218,'y'))
+    text("Number of Games Each \nTeam Plays",dim(300),dim(318,'y'))
+    text("Play Against Other Teams \nMax Times",dim(300),dim(418,'y'))
     
 def event_update():
     pass
         
 def monthly_update():
     global submit_event, submit_event_over
+    for boxes in CheckBox.checkboxes:
+        if boxes.id==0:
+            boxes.render()
     submit_event_over = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
     submit_event = Button.Button(dim(475), dim(95, 'y'), dim(180), dim(30, 'y'),dim(400),"Submit Event")
     submit_event.display(0,0,0,255,0,0,0,0)
     
 def publish_update():
-    pass
+    for boxes in CheckBox.checkboxes:
+        if boxes.id>=2 and boxes.id<=4:
+            boxes.render()
+    export_over = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
+    export.display(0,0,0,255,0,0,0,0)
+    text("This is your final step, \ncheck the boxes to include it in the pdf.",dim(300),dim(100,'y'))
+    text("Matchmaking",dim(400),dim(218,'y'))
+    text("Daily Schedule",dim(400),dim(318,'y'))
+    text("Monthly Schedule",dim(400),dim(418,'y'))
+    
     
 def team_update():
     global team_num,over_add_button,over_remove_button,ScrollY,locked
@@ -391,6 +410,9 @@ def mousePressed():
                     
         if publish:
             Input.mousepressed()
+            CheckBox.mousepressed(2)
+            CheckBox.mousepressed(3)
+            CheckBox.mousepressed(4)
             
         if event_info:
             Input.mousepressed()
@@ -412,7 +434,6 @@ def mousePressed():
                         
                         if event_name != "" and event_date != "" and event_date.isnumeric():
                             MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
-            
             
         if first_drop_menu==False:
             if clickable_list[i]:

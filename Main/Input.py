@@ -53,7 +53,7 @@ def update(string):
                         cursor(TEXT)
                         over_input = True
                         
-            if each_input.id ==302 and string == 'event':
+            if each_input.id == 302 and string == 'event':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
@@ -67,7 +67,7 @@ def update(string):
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id <= 301 and each_input.id >= 300 and string == 'match':
+            if each_input.id <= 301 and each_input.id >= 300 and string == 'matches':
                 each_input.draw_input()
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
