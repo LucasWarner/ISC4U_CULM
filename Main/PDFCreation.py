@@ -5,6 +5,7 @@ import math
 import ScheduleBar
 import Input
 import MatchOrgAndSep
+import MonthlySchedule
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
 def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
@@ -76,11 +77,11 @@ def monthly_schedule(c):
     dayOnWhichMonthStarts = [1,4,4,0,2,5,0,3,6,1,4,6]
     daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
-    events = [[23, "Spesisal Day Of FuNnEsS"], [24, "Serious Day Of Seriousness."], [4, "Feast Day"]]
-    repeatingEvent = [[0, "Garbage Pickup"],[0, "Bus Duties Broski"],[0, "Lazy Day"], [0, "Suh Dude"]]
-    
+    events = MonthlySchedule.events#[[23, "Spesisal Day Of FuNnEsS"], [24, "Serious Day Of Seriousness."], [4, "Feast Day"]]
+    repeatingEvent = MonthlySchedule.repeatingEvent#[[0, "Garbage Pickup"],[0, "Bus Duties Broski"],[0, "Lazy Day"], [0, "Suh Dude"]]
+    d = MonthlySchedule.d
     #Calculate on which day the month starts
-    time = datetime.datetime.now()
+    """time = datetime.datetime.now()
     D = 1
     M = thisMonth + 1
     Y = time.year
@@ -88,7 +89,7 @@ def monthly_schedule(c):
         M = M + 12
         Y = Y - 1
     d = (math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) - (7 * math.floor((math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) / 7))
-    
+    """
     x_offset = 25
     y_offset = 300
     

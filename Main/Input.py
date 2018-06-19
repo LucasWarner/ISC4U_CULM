@@ -45,21 +45,23 @@ def update(update_section):
     p = []
     for i in inputs:
         p.append([i.txt, i.id])
-    print(p)
+    #print(p)
     
     over_input = False
+    allowed_inputs = []
     for each_input in inputs:
         if each_input.y>70 and each_input.y<750:
-            if update_section == 'teams':
-                if each_input.id < 30 or each_input.id==2000:
-                    each_input.draw_input()
-                    
-                    if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
-                        cursor(TEXT)
-                        over_input = True
+            if each_input.id < 30 and update_section == 'teams' or each_input.id==2000 and update_section == 'teams':
+                each_input.draw_input()
+                allowed_inputs.append(each_input)
+                
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    cursor(TEXT)
+                    over_input = True
                         
             if each_input.id == 302 and update_section == 'event':
                 each_input.draw_input()
+                allowed_inputs.append(each_input)
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
@@ -67,6 +69,7 @@ def update(update_section):
                     
             if each_input.id <=304 and each_input.id >= 303 and update_section == 'monthly':
                 each_input.draw_input()
+                allowed_inputs.append(each_input)
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
@@ -74,6 +77,7 @@ def update(update_section):
                     
             if each_input.id <= 301 and each_input.id >= 300 and update_section == 'matches':
                 each_input.draw_input()
+                allowed_inputs.append(each_input)
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
@@ -81,11 +85,13 @@ def update(update_section):
                     
             if each_input.id < 40 and each_input.id >= 30 and update_section == 'daily':
                 each_input.draw_input()
+                allowed_inputs.append(each_input)
                 
                 if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
                     cursor(TEXT)
                     over_input = True
     
+    for each_input in allowed_inputs:
         if each_input.txt != "":
             fill(0)
             textAlign(LEFT)
@@ -176,13 +182,16 @@ def mousepressed(mousepressed_section):
             allowed_inputs.append(each_input)
                     
         if each_input.id <=304 and each_input.id >= 303 and mousepressed_section == 'monthly':
-             allowed_inputs.append(each_input)
-             print("Happened")
+            print("x")
+            allowed_inputs.append(each_input)
                 
         if each_input.id <= 301 and each_input.id >= 300 and mousepressed_section == 'matches':
              allowed_inputs.append(each_input)
                 
         if each_input.id < 40 and each_input.id >= 30 and mousepressed_section == 'daily':
+             allowed_inputs.append(each_input)
+             
+        if each_input.id < 30 and mousepressed_section == 'teams':
              allowed_inputs.append(each_input)
     
     activated_input = None

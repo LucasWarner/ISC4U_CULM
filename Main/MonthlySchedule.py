@@ -17,7 +17,7 @@ repeatingEvent = [[0, "Garbage Pickup"],[0, "Bus Duties Broski"],[0, "Lazy Day"]
 #Calculate on which day the month starts
 time = datetime.datetime.now()
 D = 1
-M = thisMonth + 1
+M = time.month
 Y = time.year
 if M < 3:
     M = M + 12
@@ -29,9 +29,9 @@ def addEvent(is_weekly, name, date):
     global events, repeatingEvent
     
     if is_weekly:
-        repeatingEvent.append([name, int(date)])
+        repeatingEvent.append([int(date)-1, name])
     else:
-        events.append([name, int(date)])
+        events.append([int(date), name])
 
 def display():
     global x_offset, y_offset, d, events, repeating_events
@@ -48,9 +48,10 @@ def display():
     for box_y in range(box_y_range):
         for box_x in range(7):
             if box_y == 0:
-                fill(0)
+                fill(255)
                 textSize(s/6)
                 text(daysOfTheWeek[box_x], box_x*s + x_offset + s/15, y_offset - s/10)
+                fill(0)
             line(box_x*s + x_offset, box_y*s + y_offset, (box_x+1)*s + x_offset, box_y*s + y_offset)
             line(box_x*s + x_offset, box_y*s + y_offset, box_x*s + x_offset, (box_y+1)*s + y_offset)
             if 7*box_y + (box_x+1) > d and on_number <= monthDays[thisMonth]:

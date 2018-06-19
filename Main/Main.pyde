@@ -240,7 +240,10 @@ def daily_setup(s=''):
     if s=='a':
         Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
-        Input.inputs.pop()
+        if node_num>30:
+            for each_input in Input.inputs:
+                if each_input.id == node_num:
+                    Input.inputs.pop()
         
     else:
         for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
@@ -379,10 +382,11 @@ def mousePressed():
                 ScheduleBar.addNode()
                 node_num+=1
                 daily_setup('a')
-            if delete_node:
-                ScheduleBar.removeNode()
-                node_num-=1
-                daily_setup('p')
+            if node_num>30:
+                if delete_node:
+                    ScheduleBar.removeNode()
+                    node_num-=1
+                    daily_setup('p')
             if range_10:
                 ScheduleBar.rangeOption(1)
             if range_15:
@@ -399,7 +403,7 @@ def mousePressed():
             Input.mousepressed('daily')
             
         if team:
-            Input.mousepressed('matches')
+            Input.mousepressed('teams')
             if over_add_button:
                 team_num+=1
                 team_setup('a')
@@ -422,9 +426,10 @@ def mousePressed():
             CheckBox.mousepressed(1)
             
         if monthly:
-            Input.mousepressed('montly')
+            Input.mousepressed('monthly')
+            CheckBox.mousepressed(0)
             if submit_event_over:
-                for checkbox in checkboxes:
+                for checkbox in CheckBox.checkboxes:
                     if checkbox.id == 0:
                         for each_input in Input.inputs:
                             if each_input.id == 303:
@@ -433,7 +438,16 @@ def mousePressed():
                                 event_date = each_input.txt
                         
                         if event_name != "" and event_date != "" and event_date.isnumeric():
-                            MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
+                            if checkbox.clicked:
+                                if int(event_date) <= 7:
+                                    MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
+                                    event_name.txt = ""
+                                    event_date.txt = ""
+                                    
+                            else:
+                                MonthlySchedule.addEvent(checkbox.clicked, event_name, event_date)
+                                event_name.txt = ""
+                                event_date.txt = ""
             
         if first_drop_menu==False:
             if clickable_list[i]:
@@ -489,8 +503,9 @@ def mousePressed():
             setup()
             
 def mouseReleased():
-    if daily:
-        ScheduleBar.mousereleased()
+    if first_page == False:
+        if daily:
+            ScheduleBar.mousereleased()
         
 def keyPressed():
     if first_page == False:
