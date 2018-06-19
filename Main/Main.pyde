@@ -154,6 +154,7 @@ def update_2():
         #brief description of event
         pass
     if matches:
+        matches_update()
         #numberOfGamesPerTeam
         #playAgainstOtherTeamMaxTimes
         #numberOfTeamsTotal
@@ -163,6 +164,8 @@ def update_2():
     if monthly:
         #repeatingEvent
         #events
+        monthly_setup()
+        monthly_update()
         MonthlySchedule.display()
         
 def team_names(s=''):
@@ -259,6 +262,17 @@ def Schedule_Update():
     
     for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
         text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j),'y'))
+def matches_update():
+    pass
+def monthly_setup(s=''):
+    if s=='a':
+        Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+    elif s=='p':
+        Input.inputs.pop()
+    else:
+        Input.inputs.append(Input.input(300,dim(350),dim(220,'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+def monthly_update():
+    pass
 def mousePressed():
     global first_page,second_page,first_drop_menu,second_drop_menu, third_drop_menu, schedule, input, monthly, preview, matches, event_info, add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button
     if second_page:
