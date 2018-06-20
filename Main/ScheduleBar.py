@@ -1,15 +1,6 @@
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-"""
-Information we need from the outside:
-    x/y position of the schedule bar
-    start time/total time (end time - start time)
-    smallest time interval (ie, 10, 15, 30 minutes - up to 60)
-"""
-#Should also add option to create intervals automatically
-
-
-
+#Class to hold information about the schedule bar
 class schedule_bar(object):
     def __init__ (self, pos_x, pos_y, wid, hei, node_y, smallest_time_interval, time_minutes,  text_size, start_time):
         self.pos_x = pos_x
@@ -30,7 +21,8 @@ class schedule_bar(object):
         self.start_time = start_time
         self.leftmost_clicked = False
         self.rightmost_clicked = False
-        
+    
+    #Draws the bars
     def create_bars(self, id, sort_index):
         if day_schedule_bar.types[id] == "Activity":
             fill(153, 217, 234)
@@ -38,7 +30,7 @@ class schedule_bar(object):
             fill(255, 140, 0)
         rect(day_schedule_bar.nodes[sort_index[id]].pos_x, day_schedule_bar.pos_y, day_schedule_bar.nodes[sort_index[id+1]].pos_x - day_schedule_bar.nodes[sort_index[id]].pos_x, day_schedule_bar.hei)
 
-
+#Class to hold information about nodes
 class node(object):
     def __init__ (self, x_pos, siz, time, colour=(0, 162, 232)):
         self.colour = colour
@@ -47,6 +39,7 @@ class node(object):
         self.s = siz
         self.time = time
     
+    #Method to drag nodes along the schedule bar
     def move (self):
         #Check for obstuction of other nodes
         obstructed = False
@@ -56,35 +49,41 @@ class node(object):
                 if sign(self.pos_x - n_other.pos_x, sign_type) == -sign_type and sign(int(self.pos_x + day_schedule_bar.drag_change*sign_type - n_other.pos_x), sign_type) == sign_type:
                     obstructed = True
         
+        #Move if unobstructed
         if obstructed == False:
             self.pos_x += day_schedule_bar.drag_change * sign_type
             self.time += day_schedule_bar.smallest_interval * sign_type
             day_schedule_bar.dragged = True
 
-
+#Class to hold information on text to display
 class text_display(object):
     def __init__ (self, txt, pos_x, pos_y):
         self.txt = txt
         self.pos_x = pos_x
         self.pos_y = pos_y
     
-
+#Setup global variables and schedule bar
 def Setup():
     global day_schedule_bar, drag_node, last_clicked
+    #Create schedule bar
     day_schedule_bar = schedule_bar(230, 100, 540, 10, 50, 15, 705, 20, 480)
+    #Add first three schedule bar nodes
     day_schedule_bar.nodes.append(node(0, 20, 0))
     day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
     day_schedule_bar.nodes.append(node(1, 20, day_schedule_bar.time_total))
 
+    #Id of node being dragged
     drag_node = -1
+    
+    #Id of last node clicked
     last_clicked = -1
 
 
 
 def update():
-    #rect(45, 190, 410, 50)
-    #make Bars
     noStroke()
+    
+    #Create schedule bars by order of x position (Since the nodes aren't in order of left to right)
     sort_index = [i for i in range(len(day_schedule_bar.nodes))]
     nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
     sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
@@ -92,7 +91,7 @@ def update():
         if n < len(sort_index)-1:
             day_schedule_bar.create_bars(n, sort_index)
     
-    #Make nodes
+    #Draw nodes
     fill(0, 162, 232)
     ellipseMode(CENTER)
     for n in range (len(day_schedule_bar.nodes)):
@@ -109,7 +108,6 @@ def update():
         day_schedule_bar.type_shown = None
         day_schedule_bar.time_shown = None
     
-    
     #Show type name
     fill(255)
     textSize(day_schedule_bar.text_size)
@@ -122,6 +120,8 @@ def update():
         for n in range (len(day_schedule_bar.nodes)):
             if over_clickable(day_schedule_bar.nodes[n].pos_x-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y-day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 over = True
+                
+                #Determine the string to display for time
                 raw_time = int(day_schedule_bar.nodes[n].time)
                 
                 minutes = (raw_time + day_schedule_bar.start_time) - ((raw_time + day_schedule_bar.start_time) // 60)*60
@@ -139,6 +139,7 @@ def update():
                 text(day_schedule_bar.time_shown.txt, day_schedule_bar.time_shown.pos_x, day_schedule_bar.time_shown.pos_y)
                 break
     
+    #Hide time or type depending on whether we're showing the node time
     if over == False:
         day_schedule_bar.time_shown = None
     else:
@@ -156,6 +157,8 @@ def mousepressed():
     for n in range (len(day_schedule_bar.nodes)):
         if day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x and day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x + day_schedule_bar.wid:
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
+                
+                #Begin dragging this node
                 drag_node = n
                 day_schedule_bar.dragged = False
                 
@@ -167,14 +170,15 @@ def mousepressed():
         else:
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 
-                #Leftmost node clicked
+                #Leftmost node clicked (For changing the start time)
                 if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x:
                     day_schedule_bar.leftmost_clicked = not day_schedule_bar.leftmost_clicked 
                     if day_schedule_bar.leftmost_clicked == True:
                         day_schedule_bar.nodes[n].colour = (255,255,0)
                     else:
                         day_schedule_bar.nodes[n].colour = (0, 162, 232)
-                #Rightmost node clicked
+                
+                #Rightmost node clicked (For changing the end time)
                 elif day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
                     day_schedule_bar.rightmost_clicked = not day_schedule_bar.rightmost_clicked
                     if day_schedule_bar.rightmost_clicked == True:
@@ -182,12 +186,14 @@ def mousepressed():
                     else:
                         day_schedule_bar.nodes[n].colour = (0, 162, 232)
     
-    #Check if day schedule bar clicked
+    #Check if one of the bars has already been clicked
+    #If it hasn't been clicked yet
     if day_schedule_bar.type_shown == None:
-        #If it wasn't a node that was pressed on (Because then we wouldn't want the bar to be activated)
+        #If it wasn't a node that was pressed on (Because we wouldn't then want the bar to be activated underneath it)
         if drag_node == -1:
             if over_clickable(day_schedule_bar.pos_x, day_schedule_bar.pos_y, day_schedule_bar.wid, day_schedule_bar.hei):
-                #Find closest left node
+                
+                #Determine the nodes closest to the bar clicked, so that we can determine exactly where to put the bar type (Activity or Break)
                 sort_index = [i for i in range(len(day_schedule_bar.nodes))]
                 nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
                 sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
@@ -200,8 +206,10 @@ def mousepressed():
                     r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
                     wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
                     day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
-                    
+  
+    #If it has already been clicked            
     else:
+        #Change the bar type from one to the other (Using the same method of finding the closest nodes to the bar)
         if over_clickable(day_schedule_bar.type_shown.pos_x, day_schedule_bar.pos_y, len(day_schedule_bar.type_shown.txt)*day_schedule_bar.text_size/1.6, day_schedule_bar.text_size*1.6):
             if day_schedule_bar.types[day_schedule_bar.type_shown_id] == "Activity":
                 day_schedule_bar.types[day_schedule_bar.type_shown_id] = "Break"
@@ -234,20 +242,21 @@ def mousepressed():
                     r_close = day_schedule_bar.nodes[sort_index[nodes_x.index(max(nodes_x_reduced))+1]].pos_x
                     wid = stringWidth(day_schedule_bar.types[day_schedule_bar.type_shown_id],'Helvetica', 20)
                     day_schedule_bar.type_shown = text_display(day_schedule_bar.types[day_schedule_bar.type_shown_id], (l_close + (r_close - l_close)/2) - wid/2, day_schedule_bar.pos_y + day_schedule_bar.hei*3)
-    
         
+        #If clicked somewhere else on the page, then stop displaying the type (Clicking away)
         else:
             day_schedule_bar.type_shown = None
 
 #If mouse is released
 def mousereleased():
     global day_schedule_bar, drag_node
+    #Stop dragging any nodes
     day_schedule_bar.dragged = False
     drag_node = -1
 
 #Add a node
 def addNode():
-#If not already filled with nodes
+    #If not already filled full with nodes
     if len(day_schedule_bar.nodes)-1 < int(day_schedule_bar.wid/day_schedule_bar.drag_change):
         #Look for an open space
         found_open = False
@@ -261,7 +270,8 @@ def addNode():
             for n in day_schedule_bar.nodes:
                 if int(n.pos_x) == int(check_pos):
                     open_space = False
-                
+            
+            #Add the node to that open space
             if open_space == True:
                 day_schedule_bar.nodes.append(node((check_pos - day_schedule_bar.pos_x)/day_schedule_bar.wid, 20, time_placed))
                 day_schedule_bar.types.append("Activity")
@@ -269,6 +279,7 @@ def addNode():
 
 #Remove a node
 def removeNode():
+    #Delete nodes (Assuming there is more than three nodes, and two sections)
     if len(day_schedule_bar.nodes) > 3:
         sort_index = [i for i in range(len(day_schedule_bar.nodes))]
         nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
@@ -281,9 +292,10 @@ def removeNode():
 def rangeOption(type):
     global day_schedule_bar
     
-    
+    #Save the old time interval for math below
     old_interval = day_schedule_bar.smallest_interval 
     
+    #Which range was selected
     if type == 1:
         day_schedule_bar.smallest_interval = 10
     if type == 2:
@@ -291,15 +303,17 @@ def rangeOption(type):
     if type == 3:
         day_schedule_bar.smallest_interval = 30
     
+    #Sort nodes by x position
     sort_index = [i for i in range(len(day_schedule_bar.nodes))]
     nodes_x = [int(i.pos_x) for i in day_schedule_bar.nodes]
     sort_index = [x for _,x in sorted(zip(nodes_x, sort_index))]
     nodes_x.sort()
     
+    #Find end nodes
     rightmost_index = sort_index[nodes_x.index(max(nodes_x))]
     leftmost_index = sort_index[nodes_x.index(min(nodes_x))]
     
-    #Change end nodes based on new interval
+    #Change end nodes based on new interval (Just change in time, no change in position)
     for n in range(len(day_schedule_bar.nodes)):
         if n == rightmost_index or n == leftmost_index:
             time = day_schedule_bar.nodes[n].time + day_schedule_bar.start_time
@@ -310,12 +324,12 @@ def rangeOption(type):
                     day_schedule_bar.nodes[n].time += day_schedule_bar.smallest_interval - remaining_time
                 else:
                     day_schedule_bar.nodes[n].time -= remaining_time
-        
+    
     #Change the time_total based on possible changing of the ends, as well as the drag_change
     day_schedule_bar.time_total = day_schedule_bar.nodes[2].time - day_schedule_bar.nodes[0].time
     day_schedule_bar.drag_change = (float(day_schedule_bar.smallest_interval)/float(day_schedule_bar.time_total))*float(day_schedule_bar.wid)
     
-    #Change the rest of the nodes accordingly
+    #Change the rest of the nodes accordingly (Change in time and change in position)
     for n in range(len(day_schedule_bar.nodes)):
         if n != rightmost_index and n != leftmost_index:
             time = day_schedule_bar.nodes[n].time + day_schedule_bar.start_time
@@ -333,13 +347,17 @@ def rangeOption(type):
 #Change times of end nodes
 def changeEndNodeTime(direction):
     global day_schedule_bar
+    
+    #If changing the start
     if day_schedule_bar.leftmost_clicked:
         
+        #Check if there is a node in the way before moving
         node_in_way = False
         for n in day_schedule_bar.nodes:
             if n.time - day_schedule_bar.smallest_interval*direction == 0:
                 node_in_way = True
         
+        #Change the start node time, as well as the rest of the node times accordingly, so they stay in position
         if node_in_way == False:
             day_schedule_bar.start_time += day_schedule_bar.smallest_interval*direction
             day_schedule_bar.time_total -= day_schedule_bar.smallest_interval*direction
@@ -347,19 +365,24 @@ def changeEndNodeTime(direction):
             for n in range(len(day_schedule_bar.nodes)):
                 if day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x:
                     day_schedule_bar.nodes[n].time -= day_schedule_bar.smallest_interval*direction
-                
+    
+    #If changing the end
     elif day_schedule_bar.rightmost_clicked:
+        
+        #Check if there is a node in the way before moving
         node_in_way = False
         for n in day_schedule_bar.nodes:
             if n.time - day_schedule_bar.smallest_interval*direction == day_schedule_bar.time_total:
                 node_in_way = True
         
+        #Change the end node time
         if node_in_way == False and day_schedule_bar.time_total < 25*60:
             day_schedule_bar.time_total += day_schedule_bar.smallest_interval*direction
             for n in range(len(day_schedule_bar.nodes)):
                 if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
                     day_schedule_bar.nodes[n].time += day_schedule_bar.smallest_interval*direction
     
+    #By calling rangeOption without changing the range, we will change the x positions of the nodes to be in the proper positions
     if day_schedule_bar.smallest_interval == 10:
         rangeOption(1)
     if day_schedule_bar.smallest_interval == 15:

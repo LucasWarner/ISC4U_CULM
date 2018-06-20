@@ -1,13 +1,9 @@
-"""
-Filler team options:
-1 - Use filler teams
-2 - Just have some teams play less
-3 - Enter a recommended game number, and the program will find the nearest number of teams that will work out perfectly
-
-"""
-
 import random
+import CheckBox
+
+#Function to organize teams and separate matches
 def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
+    
     #teamsNamed - List of team names
     #numberOfGamesPerTeam - Number of games each team needs to play
     #playAgainstOtherTeamMaxTimes - Number of times teams can play one another
@@ -22,22 +18,25 @@ def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
     #games[0] - left side teams of matches
     #games[1] - right side teams of matches
     #games[2] - filler matches indices (match with right side teams (games[1])
-
-    #Filler matches teams/issues
-    """if len(games[0]) + len(games[2]) < int((numberOfTeamsTotal*numberOfGamesPerTeam)/2):
-        if len(games[0]) == numberOfTeamsTotal*numberOfGamesPerTeam + len(games[2]):
-            s = "\nFiller teams: "
-            for i in games[2]:
-                s += str(games[1][i]) + ", "
-            print(s[:-2])
-        else:
-            print("No filler games possible to balance playing time")
-            print("Games Achieved: " + str(len(games[0]) + len(games[2])))
-            print("Games Needed: " + str(int((numberOfTeamsTotal*numberOfGamesPerTeam)/2)))"""
+    
+    #Set up match separation
     trueMatchIndices = [i for i in range(len(games[0]))]
-
     changing = True
-
+    
+    """
+    The Shift Separation (Created by Kaden McKeen)
+    Loop through every match and try shifting it up and down
+    If it increases the overall score of the separation on one side, then it will complete the shift in that direction
+    If both ways increase the overall score, it will choose whichever increases it more
+    
+    It then continues to try to move in that direction and stops when the overall separation score stops increasing, or when it reaches the end of the list
+    
+    If the shift decreases the overall score of the separation, it reverts to before the shift and moves on trying to shift the next match
+    
+    It will loop through and do this several times, until no more changes are made (ie, no shifting for any match increases the separation score)
+    This means (theoretically), it acheives the absolute best results possible
+    """
+    
     while changing:
         gamesBefore = copyList(games)
     
@@ -119,13 +118,31 @@ def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
             changing = False
 
 
-
+    #Returns the newly-separated matches
     if len(teamsNamed) != 0:
         return printGames(games, teamsNamed, True)
     else:
         return printGames(games, None, False)
 
+#Calculates the separation score that exist between the matches
+def calculateSeparationScore(matchesLeft, matchesRight):
+    score = 0
+    teamMatchIndices = []
+    for a in range(max(matchesRight+matchesLeft)):
+        teamIndicesLeft = [i for i, x in enumerate(matchesLeft) if x == a+1]
+        teamIndicesRight = [i for i, x in enumerate(matchesRight) if x == a+1]
+        teamMatchIndices.append(teamIndicesLeft+teamIndicesRight)
+        teamMatchIndices[-1].sort()
 
+    for t in range(len(teamMatchIndices)):
+        avScore = 0        
+        for m in range(len(teamMatchIndices[t])-1):
+            avScore += (teamMatchIndices[t][m+1]-teamMatchIndices[t][m])
+        score += avScore**2
+
+    return score
+
+#Creates the match-ups between teams
 def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
 
     #Team names
@@ -169,11 +186,16 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
             #If there are no options, then there will be filler games
             filler = True
 
-    #FILLER
+    #Tracking filler teams (If needed)
     fillerIndex = []
     
-    #If filler is needed
-    if filler == True:
+    #Check if filler matches are allowed
+    for checkbox in CheckBox.checkboxes:
+        if checkbox.id == 1:
+            filler_allowed = checkbox.clicked
+    
+    #If filler is needed and allowed by the user
+    if filler == True and filler_allowed:
         fillerNeeded = []
         #Select teams that need filler matches
         for team_select in range(len(teamsPlayed)):
@@ -200,6 +222,7 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
     return [gamesLeft, gamesRight, fillerIndex]
 
 
+#Returns the nicely formatting strings to be printed in the PDF
 def printGames(games, assignTeams, teamNameReturn):
     matches = []
     if teamNameReturn == False:
@@ -218,35 +241,6 @@ def printGames(games, assignTeams, teamNameReturn):
     return matches
 
 
-"""
-The Shift Organization
-Go through every team matching and shift them
-Tries shifting the match up and down
-If it increases the overall score of the separation on a side, then it completes that shift
-If both ways increase the overall score, it will choose whichever increases it more
-
-It then continues to try to move in that direction - ends when it stops increasing the overall score, or reaches the end of the list
-
-If it decreases the overall score of the separation, it reverts to how it was before and moves on to shifting the next match
-"""
-
-
-def calculateSeparationScore(matchesLeft, matchesRight):
-    score = 0
-    teamMatchIndices = []
-    for a in range(max(matchesRight+matchesLeft)):
-        teamIndicesLeft = [i for i, x in enumerate(matchesLeft) if x == a+1]
-        teamIndicesRight = [i for i, x in enumerate(matchesRight) if x == a+1]
-        teamMatchIndices.append(teamIndicesLeft+teamIndicesRight)
-        teamMatchIndices[-1].sort()
-
-    for t in range(len(teamMatchIndices)):
-        avScore = 0        
-        for m in range(len(teamMatchIndices[t])-1):
-            avScore += (teamMatchIndices[t][m+1]-teamMatchIndices[t][m])
-        score += avScore**2
-
-    return score
-
+#Copies a list to be identical, without actually making one directly equal to another and changing both simultaneously
 def copyList(a):
     return [i[:] for i in a]
