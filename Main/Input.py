@@ -200,6 +200,7 @@ def mousepressed(mousepressed_section):
             
             if activated_input != input_clicked:
                 each_input.activated = True
+                print(each_input.id)
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)

@@ -12,7 +12,7 @@ import CheckBox
 def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
     
     c.setFont('Helvetica', int(s/3))
-    c.drawString(wid - int(wid/1.3), y_offset+450, "Monthly Schedule")
+    c.drawString(wid - int(wid/2), y_offset+510, "Monthly Schedule")
     
     on_number = 1
     box_y_range = int((monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1)))
@@ -92,7 +92,7 @@ def monthly_schedule(c):
     d = (math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) - (7 * math.floor((math.floor(2.6 * M - 5.39) + math.floor((Y - (100 * (math.floor(Y / 100)))) / 4) + math.floor((math.floor(Y / 100)) / 4) + D + (Y - (100 * (math.floor(Y / 100)))) - (2 * (math.floor(Y / 100)))) / 7))
     """
     x_offset = 25
-    y_offset = 300
+    y_offset = 200
     
     drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, 306)
 
@@ -113,9 +113,9 @@ def drawDailySchedule(c, sections, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
     c.setFont('Helvetica', font_size*1.5)
-    c.drawString(wid - int(wid/1.3), y_offset+30, "Daily Schedule")
+    c.drawString(wid - int(wid/2), y_offset+30, "Daily Schedule")
     c.setFont('Helvetica', font_size)
-    if len(sections) <= 10:
+    if len(sections) <= 6:
         for t in range(len(sections)):
             c.drawCentredString (wid, -t*20 + y_offset, sections[t])
     else:
@@ -156,14 +156,14 @@ def daily_schedule(c, other_schedule_shown):
     font_size = 15
     wid = 306
     
-    if len(sections) <= 20 and other_schedule_shown == True:
-        y_offset = 225
+    if len(sections) <= 12 and other_schedule_shown == True:
+        y_offset = 125
         drawDailySchedule(c, sections, font_size, wid, y_offset)
         return [False, None]
     else:
         if other_schedule_shown == True:
             c.showPage()
-        y_offset = 700
+        y_offset = 675
         drawDailySchedule(c, sections, font_size, wid, y_offset)
         return [True, len(sections)]
 
@@ -173,7 +173,7 @@ def drawMatches(c, teams, font_size, wid, y_offset):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
     c.setFont('Helvetica', font_size*1.5)
-    c.drawString(wid - int(wid/1.3), y_offset+30, "Matches")
+    c.drawString(wid - int(wid/2), y_offset+30, "Matches")
     c.setFont('Helvetica', font_size)
     
     if len(teams) <= 10:
@@ -233,10 +233,10 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
     else:
         if daily_schedule_on_new_page[1] != None or monthly_schedule_on:
             c.showPage()
-            y_offset = 700
+            y_offset = 675
             drawMatches(c, matches, font_size, wid, y_offset)
         else:
-            y_offset = 700
+            y_offset = 675
             drawMatches(c, matches, font_size, wid, y_offset)
     
 def createPDF():
@@ -245,6 +245,12 @@ def createPDF():
     pdfName = "SampleMatchSheet.pdf"
     
     c = canvas.Canvas(pdfName, pagesize=letter)
+    
+    c.setFont('Helvetica', 30)
+    for title_input in Input.inputs:
+        if title_input.id == 302:
+            PDF_title = title_input.txt
+    c.drawString(50, 740, PDF_title)
     
     monthly_schedule_on = CheckBox.checkboxes[3].clicked
     daily_schedule_on = CheckBox.checkboxes[2].clicked
@@ -258,7 +264,6 @@ def createPDF():
         daily_schedule_on_new_page = [None, None]
     if matches_on:
         matches(c, daily_schedule_on_new_page, monthly_schedule_on)
-            
     
     try:
         c.save()

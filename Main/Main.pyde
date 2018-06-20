@@ -114,11 +114,10 @@ def update_1():
         rect(dim(40), dim(265, 'y'), dim(420), dim(300, 'y'), dim(40))
     fill(0)
     noStroke()
-    text("Welcome to Overload, the organizational\nprogram you wish you'd always had."+
+    text("Welcome to Overload, the organizational\nprogram meant for everyone."+
          "\nWe're there for whatever you need to \norganize. Easy, quick, and ready to go,"+
-         "\nOverload is good for daily and monthly \nscheduling, tournaments and games,"+
-         "\nas well as other more personal events. \nWith an array of useful and hand-crafted"+
-         "\nsettings, we have what you need.",dim(55), dim(300, 'y'))
+         "\nOverload is good for daily and monthly \nscheduling, tournaments and games."+
+         "\nWith an array of useful and specially made\nsettings, we have what you need.",dim(60), dim(300, 'y'))
 
 def update_2():
     global over_teams_button,over_scheduling_button,over_matchmaking_button,side_bar,clickable_list,Y,add_node, over_plus_button, over_minus_button
@@ -147,7 +146,7 @@ def update_2():
             Y+=30
             
     over_matchmaking_button = over_clickable(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'))
-    side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,"Info and Publish",True,third_drop_menu))
+    side_bar.append(Button.Button(0, dim(40+Y, 'y'), dim(150), dim(30, 'y'),0,"Publish PDF",True,third_drop_menu))
     Y+=30
     if third_drop_menu==False:
         for opt in match_menu:
@@ -198,9 +197,9 @@ def matches_setup():
             Input.inputs.append(Input.input(j+300,dim(550),dim(300+(100*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
 def monthly_setup():
-    CheckBox.checkboxes.append(CheckBox.Checkbox(0,dim(220),dim(100,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(0,dim(230),dim(100,'y')))
     for j in range(2):
-            Input.inputs.append(Input.input(j+303,dim(350),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+303,dim(390),dim(80+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     #checkbox id stuff
     
 def publish_setup():
@@ -240,29 +239,36 @@ def matches_update():
         if boxes.id==1:
             boxes.render()
     fill(255)
-    text("ddddddddddd",dim(300),dim(100,'y'))
+    text("Match Options",dim(380),dim(50,'y'))
     text("Include Fillers",dim(300),dim(218,'y'))
     text("Number of Games Each",dim(300),dim(318,'y'))
     text("Max Times One Team \nCan Play Another",dim(300),dim(418,'y'))
     
 def monthly_update():
     global submit_event, submit_event_over
+    text("Monthly Schedule",dim(380),dim(50,'y'))
+    text("Event Name",dim(285),dim(100,'y'))
+    text("Event Date",dim(295),dim(125,'y'))
+    text("Weekly\n\n Event",dim(210),dim(87,'y'))
     for boxes in CheckBox.checkboxes:
         if boxes.id==0:
             boxes.render()
-    submit_event_over = over_clickable(dim(510), dim(95, 'y'), dim(140), dim(30, 'y'))
-    submit_event = Button.Button(dim(475), dim(95, 'y'), dim(180), dim(30, 'y'),dim(400),"Submit Event")
+    submit_event_over = over_clickable(dim(540), dim(95, 'y'), dim(140), dim(30, 'y'))
+    submit_event = Button.Button(dim(525), dim(95, 'y'), dim(180), dim(30, 'y'),dim(400),"Submit Event")
     submit_event.display(0,0,0,255,0,0,0,0)
     
 def publish_update():
     global over_export
+    textFont(createFont("Helvetica", dim(20,'y')))
+    text("Publish",dim(380),dim(50,'y'))
+    text("PDF Title:",dim(355),dim(100,'y'))
     for boxes in CheckBox.checkboxes:
         if boxes.id>=2 and boxes.id<=4:
             boxes.render()
     
     over_export = over_clickable(dim(600), dim(490, 'y'), dim(80), dim(30, 'y'))
     export.display(0,0,0,255,0,0,0,0)
-    text("Check on the feature checkboxes to \ninclude them in the PDF",dim(300),dim(145,'y'))
+    text("Check the feature checkboxes to \n       include them in the PDF",dim(310),dim(145,'y'))
     text("Matchmaking",dim(400),dim(228,'y'))
     text("Daily Schedule",dim(400),dim(328,'y'))
     text("Monthly Schedule",dim(400),dim(428,'y'))
@@ -272,7 +278,8 @@ def team_update():
     global team_num,over_add_button,over_remove_button,ScrollY,locked
     
     fill(255)
-    text("Teams & Matches",dim(380),dim(50,'y') )
+    text("Teams & Matches",dim(380),dim(50,'y'))
+    text("# of Teams",dim(535),dim(70,'y'))
     
     if team_num==3:
         text("If you would not like to display the team names in the \npdf just enter in the number of teams you would like in \nthe top right box",dim(250),dim(400,'y'))
@@ -325,12 +332,14 @@ def team_update():
 def Schedule_Update():
     global add_node,delete_node, range_10, range_15, range_30, over_plus_button, over_minus_button
     
-    over_plus_button = over_clickable(520, dim(30, 'y'), dim(35), dim(40, 'y'))
-    plus_button = Button.Button(dim(490), dim(50, 'y'), dim(150), dim(30, 'y'),dim(400),"+",False,False,40)
+    text("Daily Schedule",dim(380),dim(50,'y'))
+    
+    over_plus_button = over_clickable(520, dim(50, 'y'), dim(35), dim(40, 'y'))
+    plus_button = Button.Button(dim(490), dim(70, 'y'), dim(150), dim(30, 'y'),dim(400),"+",False,False,40)
     plus_button.display(0,0,0,255,0,0,0,0)
     
-    over_minus_button = over_clickable(425, dim(30, 'y'), dim(35), dim(40, 'y'))
-    minus_button = Button.Button(dim(400), dim(50, 'y'), dim(150), dim(30, 'y'),dim(400),"-",False,False,55)
+    over_minus_button = over_clickable(425, dim(50, 'y'), dim(35), dim(40, 'y'))
+    minus_button = Button.Button(dim(400), dim(70, 'y'), dim(150), dim(30, 'y'),dim(400),"-",False,False,55)
     minus_button.display(0,0,0,255,0,0,0,0)
     
     add_node = over_clickable(dim(525), dim(160, 'y'), dim(160), dim(30, 'y'))

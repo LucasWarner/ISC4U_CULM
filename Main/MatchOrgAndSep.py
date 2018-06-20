@@ -134,10 +134,6 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
     #Teams played (Each team tracks who they have played)
     teamsPlayed = [[] for i in range(len(teams)) ]
 
-    #Shuffle the list of teams, otherwise, they it will be the exact same every time (May even want a randomize button to do the matches again?)
-    #random.shuffle(teams)
-
-
     #Games recorded (Kept separate to do match separation, but match in index)
     gamesLeft = []
     gamesRight = []

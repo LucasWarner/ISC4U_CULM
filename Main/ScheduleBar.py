@@ -158,6 +158,12 @@ def mousepressed():
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 drag_node = n
                 day_schedule_bar.dragged = False
+                
+                day_schedule_bar.leftmost_clicked = False
+                day_schedule_bar.rightmost_clicked = False
+                
+                for node_change_colour in day_schedule_bar.nodes:
+                    node_change_colour.colour = (0, 162, 232)
         else:
             if over_clickable(day_schedule_bar.nodes[n].pos_x - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].pos_y - day_schedule_bar.nodes[n].s/2, day_schedule_bar.nodes[n].s, day_schedule_bar.nodes[n].s):
                 
