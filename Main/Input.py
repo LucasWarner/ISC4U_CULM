@@ -78,14 +78,15 @@ def update(update_section):
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id < 40 and each_input.id >= 30 and update_section == 'daily':
-                each_input.draw_input()
-                allowed_inputs.append(each_input)
-                
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
-                    cursor(TEXT)
-                    over_input = True
-    
+            if each_input.id < 150 and each_input.id >= 30 and update_section == 'daily':
+                if each_input.y>218 and each_input.y<750:
+                    each_input.draw_input()
+                    allowed_inputs.append(each_input)
+                    
+                    if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                        cursor(TEXT)
+                        over_input = True
+        
     for each_input in allowed_inputs:
         if each_input.txt != "":
             fill(0)

@@ -38,7 +38,7 @@ def setup():
     Start_Page = StartPage.StartPage(dim(500),dim(40, 'y'),dim(620),dim(15, 'y'),dim(40),full_bol())
     
 def setup_2():
-    global over_plus_button, over_minus_button, first_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, daily, matches, monthly, team, vertical_Scrollbar, publish, team_num, node_num, locked
+    global over_plus_button, over_minus_button, first_page, Main_Page, first_drop_menu, second_drop_menu, third_drop_menu, team_menu, time_menu, match_menu, daily, matches, monthly, team, vertical_Scrollbar, vertical_Scrollbar_2, publish, team_num, node_num, locked, locked_2
     
     Main_Page = MainPage.MainPage()
     first_page = False
@@ -72,12 +72,14 @@ def setup_2():
     monthly = False
     monthly_setup()
     
-    daily=False
+    vertical_Scrollbar_2 = Scrollbar(dim(750), dim(240, 'y'), 16, height-275, 2)
+    locked_2 = False
+    daily = False
     node_num = 31
     ScheduleBar.Setup()
     daily_setup()
-    over_plus_button=False
-    over_minus_button=False
+    over_plus_button = False
+    over_minus_button = False
     
 def draw():
     #Updates
@@ -121,7 +123,6 @@ def update_1():
 
 def update_2():
     global over_teams_button,over_scheduling_button,over_matchmaking_button,side_bar,clickable_list,Y,add_node, over_plus_button, over_minus_button
-    
     #Refresh page and variables
     Main_Page.update()
     clickable_list=[]
@@ -187,8 +188,8 @@ def update_2():
         #event name and date
         #[date,name]
         #two textboxes
-        Input.update('monthly')
         monthly_update()
+        Input.update('monthly')
         MonthlySchedule.display()
         
 def matches_setup():
@@ -235,7 +236,7 @@ def daily_setup(s=''):
         
     else:
         for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
-            Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+            Input.inputs.append(Input.input(j+30,dim(350),dim(220+(30*j)-(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
          
 def matches_update():
     for boxes in CheckBox.checkboxes:
@@ -278,7 +279,7 @@ def publish_update():
     
     
 def team_update():
-    global team_num,over_add_button,over_remove_button,ScrollY,locked
+    global team_num,over_add_button,over_remove_button,locked
     
     fill(255)
     text("Teams & Matches",dim(380),dim(50,'y'))
@@ -313,11 +314,10 @@ def team_update():
     else:
         over_remove_button = False
         
-    scrollY = getPos()
     display()
     
     #mouse over for scrollbar
-    if overEvent(): 
+    if over_event(): 
       over = True
     else:
       over = False
@@ -335,8 +335,7 @@ def team_update():
       vertical_Scrollbar.sPos = vertical_Scrollbar.sPos + (vertical_Scrollbar.newsPos-vertical_Scrollbar.sPos)/vertical_Scrollbar.loose
       
 def daily_update():
-    global add_node,delete_node, range_10, range_15, range_30, over_plus_button, over_minus_button
-    
+    global add_node,delete_node, range_10, range_15, range_30, over_plus_button, over_minus_button,locked_2
     text("Daily Schedule",dim(380),dim(50,'y'))
     
     over_plus_button = over_clickable(520, dim(50, 'y'), dim(35), dim(40, 'y'))
@@ -368,7 +367,31 @@ def daily_update():
     range_30_button.display(0,0,0,255,0,0,0,0)
     
     for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
-        text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j),'y'))
+        if dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')>223 and dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')<750:
+            text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y'))
+        
+    for each_input in Input.inputs:
+        if each_input.id >=30 and each_input.id <=150:
+            each_input.y = dim(220+(30*(each_input.id-30))-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')
+            print(each_input.y)
+    display_2()
+    #mouse over for scrollbar
+    if over_event_2(): 
+      over = True
+    else:
+      over = False
+    # lock the scroll bar square to mouse
+    if mousePressed and over: 
+      locked_2 = True
+    # cancel lock on mouse button released
+    if mousePressed == False:
+      locked_2 = False;
+    # move scroll bar square with mouse
+    if locked_2:
+      vertical_Scrollbar_2.newsPos = constrain(mouseY-vertical_Scrollbar_2.sWidth/2, vertical_Scrollbar_2.sPosMin, vertical_Scrollbar_2.sPosMax) 
+    # move scroll bar square with mouse smoothly
+    if abs(vertical_Scrollbar_2.newsPos - vertical_Scrollbar_2.sPos) > 1: 
+      vertical_Scrollbar_2.sPos = vertical_Scrollbar_2.sPos + (vertical_Scrollbar_2.newsPos-vertical_Scrollbar_2.sPos)/vertical_Scrollbar_2.loose
         
 def mousePressed():
     global first_page,first_drop_menu,second_drop_menu, third_drop_menu, daily, team, monthly, publish, matches,  add_node,delete_node,team_num,node_num, over_plus_button, over_minus_button, over_export
@@ -541,9 +564,16 @@ class Scrollbar(object): # scroll bar class
         self.sPosMax = height-39-self.sHeight/6
         self.loose = l
         
-def overEvent(): 
+def over_event(): 
     #check for mouse overs for scrollbar square
     if mouseX > vertical_Scrollbar.xPos and mouseX < vertical_Scrollbar.xPos+vertical_Scrollbar.sWidth and mouseY > vertical_Scrollbar.yPos and mouseY < vertical_Scrollbar.yPos+vertical_Scrollbar.sHeight:
+      return True
+    else:
+      return False
+  
+def over_event_2(): 
+    #check for mouse overs for scrollbar square
+    if mouseX > vertical_Scrollbar_2.xPos and mouseX < vertical_Scrollbar_2.xPos+vertical_Scrollbar_2.sWidth and mouseY > vertical_Scrollbar_2.yPos and mouseY < vertical_Scrollbar_2.yPos+vertical_Scrollbar_2.sHeight:
       return True
     else:
       return False
@@ -551,20 +581,28 @@ def overEvent():
 def constrain(val, minv, maxv): # set scroll bar square max and min yPosition
     return min(max(val, minv), maxv)
 
-def getPos():
-    #Convert sPos to be values between
-    #0 and the total width of the scrollbar
-    return vertical_Scrollbar.sPos * vertical_Scrollbar.ratio
-
 def display():
     # scrollbar
     noStroke()
     fill(204)
     rect(vertical_Scrollbar.xPos, vertical_Scrollbar.yPos, vertical_Scrollbar.sWidth, vertical_Scrollbar.sHeight)
     # scrollbar square colour
-    if overEvent() or locked:
+    if over_event() or locked:
         fill(100, 100, 100)
     else:
         fill(100, 120, 140)
     # scrollbar square
     rect(vertical_Scrollbar.xPos, vertical_Scrollbar.sPos, vertical_Scrollbar.sWidth, vertical_Scrollbar.sHeight/6)
+    
+def display_2():
+    # scrollbar
+    noStroke()
+    fill(204)
+    rect(vertical_Scrollbar_2.xPos, vertical_Scrollbar_2.yPos, vertical_Scrollbar_2.sWidth, vertical_Scrollbar_2.sHeight)
+    # scrollbar square colour
+    if over_event() or locked:
+        fill(100, 100, 100)
+    else:
+        fill(100, 120, 140)
+    # scrollbar square
+    rect(vertical_Scrollbar_2.xPos, vertical_Scrollbar_2.sPos, vertical_Scrollbar_2.sWidth, vertical_Scrollbar_2.sHeight/6)
