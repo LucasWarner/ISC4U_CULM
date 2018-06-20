@@ -166,7 +166,7 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
             teamsPlayed[lowestPlayingTeam].append(teams[play])
             teamsPlayed[play].append(teams[lowestPlayingTeam])
         else:
-            #If there are no options, then there will be filler games
+            #If there are no options, there will be filler games
             filler = True
 
     #FILLER
