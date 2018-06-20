@@ -3,7 +3,6 @@ import CheckBox
 
 #Function to organize teams and separate matches
 def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
-    
     #teamsNamed - List of team names
     #numberOfGamesPerTeam - Number of games each team needs to play
     #playAgainstOtherTeamMaxTimes - Number of times teams can play one another
@@ -116,8 +115,7 @@ def MatchMake(teamsNamed, numberOfGamesPerTeam, playAgainstOtherTeamMaxTimes):
         
         if gamesBefore == games:
             changing = False
-
-
+    
     #Returns the newly-separated matches
     if len(teamsNamed) != 0:
         return printGames(games, teamsNamed, True)
@@ -144,7 +142,6 @@ def calculateSeparationScore(matchesLeft, matchesRight):
 
 #Creates the match-ups between teams
 def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
-
     #Team names
     teams = [str(i+1) for i in range(teamNumber)]
 
@@ -158,6 +155,7 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
     #Team options (While loop ends when there are no more options, so options must start with an element inside)
     options = [""]
 
+    print("Happened0")
     #Teams with least games will be pick or be picked, otherwise, the next index will be picked
     while len(options) != 0:
         lowestPlayingTeam = teamsPlayed.index(min(teamsPlayed, key=len))
@@ -170,13 +168,15 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
         for i in range(len(teams)):
             if lowestPlayingTeam != i and len(teamsPlayed[i]) < numberOfGamesEach and teamsPlayed[lowestPlayingTeam].count(teams[i]) < canPlaySameTeamTimes:
                 options.append(i)
-
+        
+        #print(options)
+        print("Lowest above: " + str(lowestPlayingTeam))
         #Make sure there are options
         if len(options) > 0:
             #Choose the team that also has the lowest number of matches
             teamsToPlay = [len(teamsPlayed[i]) for i in options]
             play = options[teamsToPlay.index(min(teamsToPlay))]
-
+            print("Lowest below: " + str(play))
             #Set up the match
             gamesLeft.append(int(teams[lowestPlayingTeam]))
             gamesRight.append(int(teams[play]))
@@ -185,7 +185,9 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
         else:
             #If there are no options, then there will be filler games
             filler = True
-
+    
+    print("Happened1")
+    
     #Tracking filler teams (If needed)
     fillerIndex = []
     
@@ -194,31 +196,35 @@ def getMatches(teamNumber, numberOfGamesEach, canPlaySameTeamTimes):
         if checkbox.id == 1:
             filler_allowed = checkbox.clicked
     
+    #print("Happened0")
     #If filler is needed and allowed by the user
-    if filler == True and filler_allowed:
-        fillerNeeded = []
-        #Select teams that need filler matches
-        for team_select in range(len(teamsPlayed)):
-            if teamsPlayed[team_select] != numberOfGamesEach:
-                fillerNeeded.append(team_select)
-
-        #Iterate through teams that need filler
-        for i in fillerNeeded:
-            #Find possible filler teams
-            for j in range(len(teams)):
-                #Make sure the teams actually needs more filler matches
-                if len(teamsPlayed[i]) < numberOfGamesEach:
-                    #Check to make sure they haven't already played this team too many times
-                    #Make sure that this team hasn't already been chosen as a filler a bunch (Using mode to determine whether times played is too high to have another)
-                    gamesPlayed = [len(x) for x in teamsPlayed]
-                    if i != j and teamsPlayed[int(i)].count(teams[j]) < canPlaySameTeamTimes and len(teamsPlayed[j]) <= max(set(gamesPlayed), key=gamesPlayed.count):
-                        #Set up the match with the label 'filler' for the one team
-                        gamesLeft.append(int(teams[i]))
-                        gamesRight.append(int(teams[j]))
-                        fillerIndex.append(len(gamesRight)-1)
-                        teamsPlayed[i].append(teams[j])
-                        teamsPlayed[j].append("As Filler: " + teams[i])
-
+    if filler_allowed:
+        if filler:
+            fillerNeeded = []
+            #Select teams that need filler matches
+            for team_select in range(len(teamsPlayed)):
+                if teamsPlayed[team_select] != numberOfGamesEach:
+                    fillerNeeded.append(team_select)
+    
+            #Iterate through teams that need filler
+            for i in fillerNeeded:
+                #Find possible filler teams
+                for j in range(len(teams)):
+                    #Make sure the teams actually needs more filler matches
+                    if len(teamsPlayed[i]) < numberOfGamesEach:
+                        #Check to make sure they haven't already played this team too many times
+                        #Make sure that this team hasn't already been chosen as a filler a bunch (Using mode to determine whether times played is too high to have another)
+                        gamesPlayed = [len(x) for x in teamsPlayed]
+                        if i != j and teamsPlayed[int(i)].count(teams[j]) < canPlaySameTeamTimes and len(teamsPlayed[j]) <= max(set(gamesPlayed), key=gamesPlayed.count):
+                            #Set up the match with the label 'filler' for the one team
+                            gamesLeft.append(int(teams[i]))
+                            gamesRight.append(int(teams[j]))
+                            fillerIndex.append(len(gamesRight)-1)
+                            teamsPlayed[i].append(teams[j])
+                            teamsPlayed[j].append("As Filler: " + teams[i])
+    else:
+        options = []        
+    
     return [gamesLeft, gamesRight, fillerIndex]
 
 
@@ -228,15 +234,15 @@ def printGames(games, assignTeams, teamNameReturn):
     if teamNameReturn == False:
         for i in range(len(games[0])):
             if i not in games[2]:
-                matches.append("Match {0} vs {1}".format(i+1, games[0][i], games[1][i]))
+                matches.append("{0} vs {1}".format(i+1, games[0][i], games[1][i]))
             else:
-               matches.append("Match {0} vs {1} ({1} as filler)".format(i+1, games[0][i], games[1][i]))
+               matches.append("{0} vs {1} ({1} as filler)".format(i+1, games[0][i], games[1][i]))
     else:
         for i in range(len(games[0])):
             if i not in games[2]:
-                matches.append("Match {0}: {1} vs {2}".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
+                matches.append("{0}: {1} vs {2}".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
             else:
-                matches.append("Match {0}: {1} vs {2} ({2} as filler)".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
+                matches.append("{0}: {1} vs {2} ({2} as filler)".format(i+1, assignTeams[games[0][i]-1], assignTeams[games[1][i]-1]))
 
     return matches
 

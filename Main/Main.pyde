@@ -193,7 +193,7 @@ def update_2():
         MonthlySchedule.display()
         
 def matches_setup():
-    CheckBox.checkboxes.append(CheckBox.Checkbox(1,dim(600),dim(200,'y')))
+    CheckBox.checkboxes.append(CheckBox.Checkbox(1,dim(600),dim(200,'y'), True))
     for j in range(2):
             Input.inputs.append(Input.input(j+300,dim(550),dim(300+(100*j),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     
@@ -245,9 +245,9 @@ def matches_update():
     fill(255)
     textFont(createFont("Helvetica", dim(20,'y')))
     text("Match Options",dim(380),dim(50,'y'))
-    text("Include Fillers",dim(300),dim(218,'y'))
-    text("Number of Games Each",dim(300),dim(318,'y'))
-    text("Max Times One Team \nCan Play Another",dim(300),dim(418,'y'))
+    text("Include Fillers\n(Recommended)",dim(300),dim(218,'y'))
+    text("Number of Games Each\n(Defaults to 3)",dim(300),dim(318,'y'))
+    text("Max Times One Team \nCan Play Another\n(Defaults to 1)",dim(300),dim(418,'y'))
     
 def monthly_update():
     global submit_event, submit_event_over
@@ -371,12 +371,12 @@ def daily_update():
     range_30_button.display(0,0,0,255,0,0,0,0)
     
     for j in range(len(ScheduleBar.day_schedule_bar.nodes)-1):
-        if dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')>223 and dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')<750:
-            text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j)-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y'))
+        if dim(240 + (30*j)-(13.8*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')>223 and dim(240 + (30*j)-(13.8*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')<750:
+            text(str(j+1) + ". Name:",dim(240),dim(240 + (30*j)-(13.8*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y'))
         
     for each_input in Input.inputs:
         if each_input.id >=30 and each_input.id <=150:
-            each_input.y = dim(220+(30*(each_input.id-30))-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')
+            each_input.y = dim(220+(30*(each_input.id-30))-(13.8*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')
     
     display_2()
     #mouse over for scrollbar
@@ -404,11 +404,12 @@ def mousePressed():
         i=0
         
         if daily:
-            if add_node:
-                ScheduleBar.addNode()
-                node_num+=1
-                daily_setup('a')
-            if node_num>31:
+            if node_num < 180:
+                if add_node:
+                    ScheduleBar.addNode()
+                    node_num+=1
+                    daily_setup('a')
+            if node_num > 31:
                 if delete_node:
                     ScheduleBar.removeNode()
                     node_num-=1

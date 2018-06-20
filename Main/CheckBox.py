@@ -1,11 +1,11 @@
 checkboxes=[]
 
 class Checkbox(object):
-    def __init__(self,id,x,y):
+    def __init__(self,id,x,y,clicked=False):
         self.id = id
         self.x = x
         self.y = y
-        self.clicked = False
+        self.clicked = clicked
     #def setup(self):
         
     

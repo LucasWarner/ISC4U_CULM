@@ -91,7 +91,7 @@ def update(update_section):
                     cursor(TEXT)
                     over_input = True
                     
-            if each_input.id < 150 and each_input.id >= 30 and update_section == 'daily':
+            if each_input.id < 180 and each_input.id >= 30 and update_section == 'daily':
                 if each_input.y>218 and each_input.y<750:
                     each_input.draw_input()
                     allowed_inputs.append(each_input)
@@ -201,7 +201,7 @@ def mousepressed(mousepressed_section):
         if each_input.id <= 301 and each_input.id >= 300 and mousepressed_section == 'matches':
             allowed_inputs.append(each_input)
                 
-        if each_input.id < 40 and each_input.id >= 30 and mousepressed_section == 'daily':
+        if each_input.id < 180 and each_input.id >= 30 and mousepressed_section == 'daily':
             allowed_inputs.append(each_input)
              
         if each_input.id < 30 and mousepressed_section == 'teams':

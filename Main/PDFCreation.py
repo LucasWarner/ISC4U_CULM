@@ -235,14 +235,14 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
         #Numerical names whose lenth is the user-inputted number
         if team_number_input.txt.isdigit() and team_number_input.txt != '':
             if int(team_number_input.txt) < 100:
-                matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))], games_each, play_other_max)
+                matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))], int(games_each), int(play_other_max))
         
         #Numerical names based on number of teams added
         else:
-             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))], games_each, play_other_max)
+             matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))], int(games_each), int(play_other_max))
     #User inputted names
     else:
-        matches = MatchOrgAndSep.MatchMake(teams, games_each, play_other_max)
+        matches = MatchOrgAndSep.MatchMake(teams, int(games_each), int(play_other_max))
     
     #Determine where to draw, based on surrounding features that need to be drawn
     if daily_schedule_on_new_page[0] == True:
