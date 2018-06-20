@@ -73,7 +73,7 @@ def setup_2():
     monthly_setup()
     
     daily=False
-    node_num = 30
+    node_num = 31
     ScheduleBar.Setup()
     daily_setup()
     over_plus_button=False
@@ -160,7 +160,7 @@ def update_2():
         
     if daily:
         ScheduleBar.update()
-        Schedule_Update()
+        daily_update()
         Input.update('daily')
         
     if team:
@@ -215,7 +215,10 @@ def team_setup(s=''):
     if s=='a':
         Input.inputs.append(Input.input(team_num-1,dim(350),dim(80+(30*(team_num-1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
-        Input.inputs.pop()
+        if team_num>=2:
+            for each_input in Input.inputs:
+                if each_input.id == team_num:
+                    Input.inputs.pop()
         
     else:
         for j in range(team_num):
@@ -224,7 +227,7 @@ def team_setup(s=''):
             
 def daily_setup(s=''):
     if s=='a':
-        Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-29)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
+        Input.inputs.append(Input.input(node_num,dim(350),dim(220+(30*(node_num-30)),'y'),dim(25,'y'),dim(150),dim(18, 'y')))
     elif s=='p':
         if node_num>30:
             for each_input in Input.inputs:
@@ -290,14 +293,16 @@ def team_update():
     if team_num<30:
         over_add_button = over_clickable(dim(240), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(140), dim(30, 'y'))
         add_button = Button.Button(dim(240), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(140), dim(30, 'y'),dim(400),"Add Team")
-        add_button.display(0,0,0,255,0,0,0,0)
+        if add_button.y>70 and add_button.y<750:
+            add_button.display(0,0,0,255,0,0,0,0)
     else:
         over_add_button = False
         
     if team_num>1:
         over_remove_button = over_clickable(dim(410), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(150), dim(30, 'y'))
         remove_button = Button.Button(dim(380), dim(100 + (30*(j+1))-(vertical_Scrollbar.sPos-vertical_Scrollbar.yPos), 'y'), dim(180), dim(30, 'y'),dim(400),"Remove Team")
-        remove_button.display(0,0,0,255,0,0,0,0)
+        if remove_button.y>70 and remove_button.y<750:
+            remove_button.display(0,0,0,255,0,0,0,0)
     else:
         over_remove_button = False
         
@@ -322,7 +327,7 @@ def team_update():
     if abs(vertical_Scrollbar.newsPos - vertical_Scrollbar.sPos) > 1: 
       vertical_Scrollbar.sPos = vertical_Scrollbar.sPos + (vertical_Scrollbar.newsPos-vertical_Scrollbar.sPos)/vertical_Scrollbar.loose
       
-def Schedule_Update():
+def daily_update():
     global add_node,delete_node, range_10, range_15, range_30, over_plus_button, over_minus_button
     
     over_plus_button = over_clickable(520, dim(30, 'y'), dim(35), dim(40, 'y'))
@@ -367,7 +372,7 @@ def mousePressed():
                 ScheduleBar.addNode()
                 node_num+=1
                 daily_setup('a')
-            if node_num>30:
+            if node_num>31:
                 if delete_node:
                     ScheduleBar.removeNode()
                     node_num-=1
