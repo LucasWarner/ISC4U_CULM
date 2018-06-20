@@ -243,6 +243,7 @@ def matches_update():
         if boxes.id==1:
             boxes.render()
     fill(255)
+    textFont(createFont("Helvetica", dim(20,'y')))
     text("Match Options",dim(380),dim(50,'y'))
     text("Include Fillers",dim(300),dim(218,'y'))
     text("Number of Games Each",dim(300),dim(318,'y'))
@@ -250,9 +251,10 @@ def matches_update():
     
 def monthly_update():
     global submit_event, submit_event_over
+    textFont(createFont("Helvetica", dim(20,'y')))
     text("Monthly Schedule",dim(380),dim(50,'y'))
-    text("Event Name",dim(285),dim(100,'y'))
-    text("Event Date",dim(295),dim(125,'y'))
+    text("Event Name",dim(275),dim(100,'y'))
+    text("Event Date",dim(285),dim(125,'y'))
     text("Weekly\n\n Event",dim(210),dim(87,'y'))
     for boxes in CheckBox.checkboxes:
         if boxes.id==0:
@@ -272,6 +274,7 @@ def publish_update():
     
     over_export = over_clickable(dim(600), dim(490, 'y'), dim(80), dim(30, 'y'))
     export.display(0,0,0,255,0,0,0,0)
+    textFont(createFont("Helvetica", dim(20,'y')))
     text("Check the feature checkboxes to \n       include them in the PDF",dim(310),dim(145,'y'))
     text("Matchmaking",dim(400),dim(228,'y'))
     text("Daily Schedule",dim(400),dim(328,'y'))
@@ -282,6 +285,7 @@ def team_update():
     global team_num,over_add_button,over_remove_button,locked
     
     fill(255)
+    textFont(createFont("Helvetica", dim(20,'y')))
     text("Teams & Matches",dim(380),dim(50,'y'))
     text("# of Teams",dim(535),dim(70,'y'))
     
@@ -373,7 +377,7 @@ def daily_update():
     for each_input in Input.inputs:
         if each_input.id >=30 and each_input.id <=150:
             each_input.y = dim(220+(30*(each_input.id-30))-(4*(vertical_Scrollbar_2.sPos-vertical_Scrollbar_2.yPos)),'y')
-            print(each_input.y)
+    
     display_2()
     #mouse over for scrollbar
     if over_event_2(): 
@@ -440,7 +444,7 @@ def mousePressed():
             CheckBox.mousepressed(4)
             
             if over_export:
-                print("Happened")
+                print("A")
                 PDFCreation.createPDF()
 
         if matches:
@@ -464,13 +468,17 @@ def mousePressed():
                                 if int(event_date.txt) <= 7:
                                     MonthlySchedule.addEvent(checkbox.clicked, event_name.txt, event_date.txt)
                                     event_name.txt = ""
+                                    event_name.txt_show = ""
                                     event_date.txt = ""
+                                    event_date.txt_show = ""
                                     
                             else:
                                 MonthlySchedule.addEvent(checkbox.clicked, event_name.txt, event_date.txt)
                                 event_name.txt = ""
+                                event_name.txt_show = ""
                                 event_date.txt = ""
-            
+                                event_date.txt_show = ""
+        
         if first_drop_menu==False:
             if clickable_list[i]:
                 team = not team

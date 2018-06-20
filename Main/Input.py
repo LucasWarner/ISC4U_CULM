@@ -48,20 +48,30 @@ def update(update_section):
     over_input = False
     allowed_inputs = []
     for each_input in inputs:
+        
+        #If input is on the page (Not scrolled off)
         if each_input.y>70 and each_input.y<750:
             if each_input.id < 30 and update_section == 'teams' or each_input.id==2000 and update_section == 'teams':
                 each_input.draw_input()
                 allowed_inputs.append(each_input)
                 
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
                     cursor(TEXT)
                     over_input = True
-                        
+        
+            if each_input.id == 2000 and update_section == 'teams':
+                each_input.draw_input()
+                allowed_inputs.append(each_input)
+                    
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
+                    cursor(TEXT)
+                    over_input = True
+            
             if each_input.id == 302 and update_section == 'event':
                 each_input.draw_input()
                 allowed_inputs.append(each_input)
                 
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
                     cursor(TEXT)
                     over_input = True
                     
@@ -69,7 +79,7 @@ def update(update_section):
                 each_input.draw_input()
                 allowed_inputs.append(each_input)
                 
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
                     cursor(TEXT)
                     over_input = True
                     
@@ -77,7 +87,7 @@ def update(update_section):
                 each_input.draw_input()
                 allowed_inputs.append(each_input)
                 
-                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
                     cursor(TEXT)
                     over_input = True
                     
@@ -86,7 +96,7 @@ def update(update_section):
                     each_input.draw_input()
                     allowed_inputs.append(each_input)
                     
-                    if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei): #or input_count == activated_input:
+                    if over_clickable(each_input.x, each_input.y, each_input.wid, each_input.hei):
                         cursor(TEXT)
                         over_input = True
     
@@ -180,6 +190,7 @@ def mousepressed(mousepressed_section):
     
     #Check which inputs to check for mouse presses (Depends on the active page)
     allowed_inputs = []
+    
     for each_input in inputs:
         if each_input.id == 302 and mousepressed_section == 'event':
             allowed_inputs.append(each_input)
@@ -188,13 +199,16 @@ def mousepressed(mousepressed_section):
             allowed_inputs.append(each_input)
                 
         if each_input.id <= 301 and each_input.id >= 300 and mousepressed_section == 'matches':
-             allowed_inputs.append(each_input)
+            allowed_inputs.append(each_input)
                 
         if each_input.id < 40 and each_input.id >= 30 and mousepressed_section == 'daily':
-             allowed_inputs.append(each_input)
+            allowed_inputs.append(each_input)
              
         if each_input.id < 30 and mousepressed_section == 'teams':
-             allowed_inputs.append(each_input)
+            allowed_inputs.append(each_input)
+        
+        if each_input.id == 2000 and mousepressed_section == 'teams':
+            allowed_inputs.append(each_input)
     
     #Finds activated input
     activated_input = None
@@ -211,7 +225,7 @@ def mousepressed(mousepressed_section):
             #If this input isn't already active (Make active)
             if activated_input != input_clicked:
                 each_input.activated = True
-                print(each_input.id)
+                
                 for cursor_position in range(len(each_input.txt_show)):
                     fill(0)
                     stroke(0)

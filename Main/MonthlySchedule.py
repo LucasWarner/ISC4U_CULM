@@ -36,6 +36,7 @@ def addEvent(is_weekly, name, date):
     
     if is_weekly:
         repeatingEvent.append([int(date)-1, name])
+        print(repeatingEvent)
     else:
         events.append([int(date), name])
 
@@ -85,7 +86,7 @@ def display():
                 
                 #Draw repeating events
                 for repeat_e in repeatingEvent:
-                    if ((on_number-d) % 7) == repeat_e[0] and event_in_box[on_number-1] < 4:
+                    if ((on_number + d - 1) % 7) == repeat_e[0] and event_in_box[on_number-1] < 4:
                         if len(repeat_e[1]) < 15:
                             text(repeat_e[1][:15], float(box_x*s) + float(s)*1/15 + x_offset, float((box_y+1)*s) - float(s)*6.5/10 + float(s)*2/10*event_in_box[on_number-1] + y_offset)
                         else:
