@@ -62,7 +62,7 @@ def drawSchedule(c, month_days, this_month, d, x_offset, y_offset, events, repea
                 
                 #Draw repeating events
                 for repeat_e in repeating_events:
-                    if ((on_number-d) % 7) == repeat_e[0] and event_in_box[on_number-1] < 4:
+                    if ((on_number + d - 1) % 7) == repeat_e[0] and event_in_box[on_number-1] < 4:
                         if len(repeat_e[1]) < 15:
                             c.drawString(float(box_x*s) + float(s)*1/15 + x_offset, float((box_y_range-box_y)*s) - float(s)*9.3/10 + float(s)*2/10*event_in_box[on_number-1] + y_offset, repeat_e[1][:15])
                         else:
@@ -108,10 +108,10 @@ def monthly_schedule(c):
 #Turn a raw_time value in minutes into a 'hour:minute' string to display to the user
 def printTime(raw_time):   
     minutes = (raw_time + ScheduleBar.day_schedule_bar.start_time) - ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60)*60
-    hours = ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60)
-    
-    if hours != hours % 13:
-        hours = (hours % 13) + 1
+    hours = ((raw_time + ScheduleBar.day_schedule_bar.start_time) // 60) % 12
+                
+    if hours == 0:
+        hours = 12
     
     if len(str(minutes)) == 2:
         proper_time = "{0}:{1}".format(hours, minutes)
@@ -231,6 +231,9 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
     
     if games_each.isnumeric() == False:
         games_each = 3
+    else:
+        if int(games_each) > 5:
+            games_each = 5
     if play_other_max.isnumeric() == False:
         play_other_max = 1
     
@@ -246,19 +249,25 @@ def matches(c, daily_schedule_on_new_page, monthly_schedule_on):
         #Determine team names
         #Numerical names whose lenth is the user-inputted number
         if team_number_input.txt.isdigit() and team_number_input.txt != '':
-            if int(team_number_input.txt) < 100:
+            if int(team_number_input.txt) < 25:
                 matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(int(team_number_input.txt))], int(games_each), int(play_other_max))
+            else:
+                matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(25)], int(games_each), int(play_other_max))
         
         #Numerical names based on number of teams added
         else:
              matches = MatchOrgAndSep.MatchMake(['Team '+str(i+1) for i in range(len(teams))], int(games_each), int(play_other_max))
+    
     #User inputted names
     else:
+        for team in range(len(teams)):
+            if teams[team] == "":
+                teams[team] = "Team " + str(team+1)
         matches = MatchOrgAndSep.MatchMake(teams, int(games_each), int(play_other_max))
     
     #Determine where to draw, based on surrounding features that need to be drawn
     if daily_schedule_on_new_page[0] == True:
-        if daily_schedule_on_new_page[1] + len(matches) < 65:
+        if daily_schedule_on_new_page[1] + len(matches) < 60:
             y_offset = 600 - daily_schedule_on_new_page[1]*10
             drawMatches(c, matches, font_size, wid, y_offset)
         else:

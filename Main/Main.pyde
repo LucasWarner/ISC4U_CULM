@@ -246,7 +246,7 @@ def matches_update():
     textFont(createFont("Helvetica", dim(20,'y')))
     text("Match Options",dim(380),dim(50,'y'))
     text("Include Filler Matches\n(Recommended)",dim(300),dim(218,'y'))
-    text("Number of Games Each\n(Defaults to 3)",dim(300),dim(318,'y'))
+    text("Number of Games Each\n(Defaults to 3, Caps at 5)",dim(300),dim(318,'y'))
     text("Max Times One Team \nCan Play Another\n(Defaults to 1)",dim(300),dim(418,'y'))
     
 def monthly_update():
@@ -287,7 +287,7 @@ def team_update():
     fill(255)
     textFont(createFont("Helvetica", dim(20,'y')))
     text("Teams & Matches",dim(380),dim(50,'y'))
-    text("# of Teams",dim(535),dim(70,'y'))
+    text("# of Teams\n\nCaps at 25",dim(535),dim(70,'y'))
     
     if team_num==3:
         text("If you would not like to display the team names in the \npdf just enter in the number of teams you would like in \nthe top right box",dim(250),dim(400,'y'))

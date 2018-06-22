@@ -80,7 +80,7 @@ class text_display(object):
 def Setup():
     global day_schedule_bar, drag_node, last_clicked
     #Create schedule bar
-    day_schedule_bar = schedule_bar(230, 100, 540, 10, 50, 15, 705, 20, 480)
+    day_schedule_bar = schedule_bar(230, 100, 540, 10, 50, 15, 420, 20, 480)
     #Add first three schedule bar nodes
     day_schedule_bar.nodes.append(node(0, 20, 0))
     day_schedule_bar.nodes.append(node(((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval)) / day_schedule_bar.time_total, 20, int((float(day_schedule_bar.time_total/2)) - (float(day_schedule_bar.time_total/2) % day_schedule_bar.smallest_interval))))
@@ -139,10 +139,10 @@ def update():
                 raw_time = int(day_schedule_bar.nodes[n].time)
                 
                 minutes = (raw_time + day_schedule_bar.start_time) - ((raw_time + day_schedule_bar.start_time) // 60)*60
-                hours = ((raw_time + day_schedule_bar.start_time) // 60)
+                hours = ((raw_time + day_schedule_bar.start_time) // 60) % 12
                 
-                if hours != hours % 13:
-                    hours = (hours % 13) + 1
+                if hours == 0:
+                    hours = 12
                 
                 if len(str(minutes)) == 2:
                     proper_time = "{0}:{1}".format(hours, minutes)
@@ -364,21 +364,22 @@ def changeEndNodeTime(direction):
     
     #If changing the start
     if day_schedule_bar.leftmost_clicked:
-        
         #Check if there is a node in the way before moving
         node_in_way = False
         for n in day_schedule_bar.nodes:
             if n.time - day_schedule_bar.smallest_interval*direction == 0:
                 node_in_way = True
         
-        #Change the start node time, as well as the rest of the node times accordingly, so they stay in position
-        if node_in_way == False:
-            day_schedule_bar.start_time += day_schedule_bar.smallest_interval*direction
-            day_schedule_bar.time_total -= day_schedule_bar.smallest_interval*direction
+        #Change the start node time (If there is no nodes in the way, and the time is less than 24 hours)
+        if day_schedule_bar.time_total < 24*60 or direction == 1:
+            #Change the start node time, as well as the rest of the node times accordingly, so they stay in position
+            if node_in_way == False:
+                day_schedule_bar.start_time += day_schedule_bar.smallest_interval*direction
+                day_schedule_bar.time_total -= day_schedule_bar.smallest_interval*direction
             
-            for n in range(len(day_schedule_bar.nodes)):
-                if day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x:
-                    day_schedule_bar.nodes[n].time -= day_schedule_bar.smallest_interval*direction
+                for n in range(len(day_schedule_bar.nodes)):
+                    if day_schedule_bar.nodes[n].pos_x != day_schedule_bar.pos_x:
+                        day_schedule_bar.nodes[n].time -= day_schedule_bar.smallest_interval*direction
     
     #If changing the end
     elif day_schedule_bar.rightmost_clicked:
@@ -389,12 +390,13 @@ def changeEndNodeTime(direction):
             if n.time - day_schedule_bar.smallest_interval*direction == day_schedule_bar.time_total:
                 node_in_way = True
         
-        #Change the end node time
-        if node_in_way == False and day_schedule_bar.time_total < 25*60:
-            day_schedule_bar.time_total += day_schedule_bar.smallest_interval*direction
-            for n in range(len(day_schedule_bar.nodes)):
-                if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
-                    day_schedule_bar.nodes[n].time += day_schedule_bar.smallest_interval*direction
+        #Change the end node time (If there is no nodes in the way, and the time is less than 24 hours)
+        if day_schedule_bar.time_total < 24*60 or direction == -1:
+            if node_in_way == False:
+                day_schedule_bar.time_total += day_schedule_bar.smallest_interval*direction
+                for n in range(len(day_schedule_bar.nodes)):
+                    if day_schedule_bar.nodes[n].pos_x == day_schedule_bar.pos_x + day_schedule_bar.wid:
+                        day_schedule_bar.nodes[n].time += day_schedule_bar.smallest_interval*direction
     
     #By calling rangeOption without changing the range, we will change the x positions of the nodes to be in the proper positions
     if day_schedule_bar.smallest_interval == 10:
