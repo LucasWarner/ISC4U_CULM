@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           PDFCreation.py
+
+# Purpose:        File to create the PDF (Monthly schedule, daily schedule, matchmaking)
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 import datetime
@@ -10,7 +24,7 @@ import CheckBox
 #https://www.reportlab.com/docs/reportlab-userguide.pdf
 
 #Draw the monthly schedule
-def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, wid):
+def drawSchedule(c, month_days, this_month, d, x_offset, y_offset, events, repeating_events, s, days_of_week, wid):
     
     #Draw title
     c.setFont('Helvetica', int(s/3))
@@ -18,26 +32,26 @@ def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeati
     
     #Setup draw variables
     on_number = 1
-    box_y_range = int((monthDays[thisMonth]+d-1)/7 + (1-(((monthDays[thisMonth]+d-1)/7)%1)))
-    event_in_box = [0 for i in range(monthDays[thisMonth])]
+    box_y_range = int((month_days[this_month]+d-1)/7 + (1-(((month_days[this_month]+d-1)/7)%1)))
+    event_in_box = [0 for i in range(month_days[this_month])]
 
     #Draw the boxes
     for box_y in range(box_y_range):
         for box_x in range(7):
             if box_y == 0:
                 c.setFont('Helvetica', int(s/6))
-                c.drawString(box_x*s + x_offset + s/15, y_offset + box_y_range*s + s/10, text=daysOfTheWeek[box_x])
+                c.drawString(box_x*s + x_offset + s/15, y_offset + box_y_range*s + s/10, text=days_of_week[box_x])
             
             c.setFont('Helvetica', int(s/8))
             c.line(box_x*s + x_offset, box_y*s + y_offset, (box_x+1)*s + x_offset, box_y*s + y_offset)
             c.line(box_x*s + x_offset, box_y*s + y_offset, box_x*s + x_offset, (box_y+1)*s + y_offset)
-            if 7*box_y + (box_x+1) > d and on_number <= monthDays[thisMonth]:
+            if 7*box_y + (box_x+1) > d and on_number <= month_days[this_month]:
                 #Print day number
                 c.drawString(float(box_x*s) + float(s)*1/15 + x_offset, float((box_y_range-box_y-1)*s) + float(s)*8.5/10 + y_offset, text=str(on_number))
                 
                 #Draw events
                 for event in events:
-                    if event[0] <= monthDays[thisMonth]:
+                    if event[0] <= month_days[this_month]:
                         if on_number == event[0] and event_in_box[on_number-1] < 4:
                             if len(event[1]) < 15:
                                 c.drawString(float(box_x*s) + float(s)*1/15 + x_offset, float((box_y_range-box_y)*s) - float(s)*9.3/10 + float(s)*2/10*event_in_box[on_number-1] + y_offset, event[1][:15])
@@ -47,7 +61,7 @@ def drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeati
                             event_in_box[on_number-1] += 1
                 
                 #Draw repeating events
-                for repeat_e in repeatingEvent:
+                for repeat_e in repeating_events:
                     if ((on_number-d) % 7) == repeat_e[0] and event_in_box[on_number-1] < 4:
                         if len(repeat_e[1]) < 15:
                             c.drawString(float(box_x*s) + float(s)*1/15 + x_offset, float((box_y_range-box_y)*s) - float(s)*9.3/10 + float(s)*2/10*event_in_box[on_number-1] + y_offset, repeat_e[1][:15])
@@ -68,30 +82,28 @@ def monthly_schedule(c):
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
     
-    thisMonth = 0
-    monthDays = [31,29,31,30,31,30,31,31,30,31,30,31]
+    this_month = 0
+    month_days = [31,29,31,30,31,30,31,31,30,31,30,31]
     
     s = 80
     rows = 5
     collumns = 7
     
-    topPadding = 50
-    
-    thisMonth = 0
-    monthDays = [31,29,31,30,31,30,31,31,30,31,30,31]
-    dayOnWhichMonthStarts = [1,4,4,0,2,5,0,3,6,1,4,6]
-    daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    this_month = 0
+    month_days = [31,29,31,30,31,30,31,31,30,31,30,31]
+    first_day_of_month = [1,4,4,0,2,5,0,3,6,1,4,6]
+    days_of_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     #Pull events from MonthlySchedule, where the user has created their events
     events = MonthlySchedule.events
-    repeatingEvent = MonthlySchedule.repeatingEvent
+    repeating_events = MonthlySchedule.repeating_events
     d = MonthlySchedule.d
     
     x_offset = 25
     y_offset = 200
     
     #Draw the schedule
-    drawSchedule(c, monthDays, thisMonth, d, x_offset, y_offset, events, repeatingEvent, s, daysOfTheWeek, 306)
+    drawSchedule(c, month_days, this_month, d, x_offset, y_offset, events, repeating_events, s, days_of_week, 306)
 
 #Turn a raw_time value in minutes into a 'hour:minute' string to display to the user
 def printTime(raw_time):   

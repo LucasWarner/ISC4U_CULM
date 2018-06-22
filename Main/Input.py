@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           Input.py
+
+# Purpose:        File for input class
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 import time
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
@@ -111,13 +125,13 @@ def update(update_section):
             width_score = stringWidth(each_input.txt,'Helvetica', each_input.text_size)
             if width_score < 140:
                 each_input.txt_show = each_input.txt
-                addOne = 1
+                add_one = 1
             elif each_input.edit_position > each_input.show_start and each_input.edit_position < each_input.show_end:
                 each_input.txt_show = each_input.txt[each_input.show_start:each_input.show_end]
                 each_input.show_end = 0
-                addOne = 0
+                add_one = 0
             else:
-                addOne = 0
+                add_one = 0
                 each_input.show_start = 0
                 each_input.show_end = len(each_input.txt)
                 while width_score >= 140:

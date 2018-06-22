@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           StartPage.py
+
+# Purpose:        File for start page class
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 class StartPage(object):
     def __init__ (self,tx,ty,x,y,s,FS):
         start_page = loadImage("Cover.jpeg")

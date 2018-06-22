@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           ScheduleBar.py
+
+# Purpose:        File for class and functions of the daily schedule bar
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
 #Class to hold information about the schedule bar

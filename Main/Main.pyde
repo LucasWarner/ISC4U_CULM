@@ -1,9 +1,8 @@
-
 # -------------------------------------------------------------------------------
 
 # Name:           Main.py
 
-# Purpose:        Main file for final project
+# Purpose:        Main file for culminating project
 
 # Author:         Warner.Lucas, McKeen.Kaden
 
@@ -12,6 +11,7 @@
 # Created:        13/04/2018
 
 # ------------------------------------------------------------------------------
+
 import MainPage
 import StartPage
 import Button
@@ -245,7 +245,7 @@ def matches_update():
     fill(255)
     textFont(createFont("Helvetica", dim(20,'y')))
     text("Match Options",dim(380),dim(50,'y'))
-    text("Include Fillers\n(Recommended)",dim(300),dim(218,'y'))
+    text("Include Filler Matches\n(Recommended)",dim(300),dim(218,'y'))
     text("Number of Games Each\n(Defaults to 3)",dim(300),dim(318,'y'))
     text("Max Times One Team \nCan Play Another\n(Defaults to 1)",dim(300),dim(418,'y'))
     

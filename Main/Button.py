@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           Button.py
+
+# Purpose:        File for button class
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 class Button(object):
     def __init__ (self,Xpos,Ypos,wid,high,rad,tex="null",ist=False,rotri=False, textSize=20):
         self.x = Xpos

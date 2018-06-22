@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           MainPage.py
+
+# Purpose:        File for main page class
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 class MainPage:
     def __init__(self):
         global main_page

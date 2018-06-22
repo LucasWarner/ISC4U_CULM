@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+
+# Name:           CheckBox.py
+
+# Purpose:        File for checkbox class
+
+# Author:         Warner.Lucas, McKeen.Kaden
+
+#
+
+# Created:        13/04/2018
+
+# ------------------------------------------------------------------------------
+
 checkboxes=[]
 
 class Checkbox(object):
